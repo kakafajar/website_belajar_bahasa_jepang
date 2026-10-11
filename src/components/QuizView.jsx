@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Volume2,
   CheckCircle,
@@ -7,10 +7,25 @@ import {
   BookOpen,
   ArrowRight,
   Award,
-} from 'lucide-react';
-import { quizBank, playJapaneseAudio } from '../data/japaneseData';
+  Shuffle,
+  Sparkles,
+} from './Icons';
+import { playJapaneseAudio, quizBank } from '../data/japaneseData';
+import { generateRandomQuiz } from '../data/quizGenerator';
+
+// Mengambil kumpulan soal standar terstruktur untuk tiap kategori
+function getStandardQuestions(cat) {
+  const bank = quizBank[cat] || quizBank.hiragana;
+  return bank.map((q) => ({
+    ...q,
+    typeBadge: q.typeBadge || (cat === 'kanji' ? 'Kanji N5' : cat === 'katakana' ? 'Katakana' : 'Hiragana'),
+  }));
+}
 
 export default function QuizView({ category, onSwitchCategory, onBackToLearn }) {
+  // Secara bawaan, gunakan soal standar agar tidak teracak saat berpindah kategori
+  const [isRandomMode, setIsRandomMode] = useState(false);
+  const [questions, setQuestions] = useState(() => getStandardQuestions(category));
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [selectedOption, setSelectedOption] = useState(null);
   const [isAnswered, setIsAnswered] = useState(false);
@@ -19,16 +34,27 @@ export default function QuizView({ category, onSwitchCategory, onBackToLearn }) 
   const [isCompleted, setIsCompleted] = useState(false);
   const [isPlayingAudio, setIsPlayingAudio] = useState(false);
 
-  // Ambil bank soal berdasarkan kategori aktif
-  const questions = quizBank[category] || quizBank.hiragana;
-  const currentQ = questions[currentQuestionIndex];
+  // Saat berpindah kategori (Hiragana/Katakana/Kanji), tampilkan urutan standar yang konsisten
+  useEffect(() => {
+    setIsRandomMode(false);
+    setQuestions(getStandardQuestions(category));
+    setCurrentQuestionIndex(0);
+    setSelectedOption(null);
+    setIsAnswered(false);
+    setScore(0);
+    setUserAnswers([]);
+    setIsCompleted(false);
+  }, [category]);
+
+  const currentQ = questions[currentQuestionIndex] || questions[0];
 
   // Memutar suara soal
   const handlePlayQuestionAudio = () => {
     if (!currentQ) return;
+    const soundText = currentQ.audioText || currentQ.questionChar;
     setIsPlayingAudio(true);
     playJapaneseAudio(
-      currentQ.questionChar,
+      soundText,
       () => setIsPlayingAudio(true),
       () => setIsPlayingAudio(false)
     );
@@ -36,7 +62,7 @@ export default function QuizView({ category, onSwitchCategory, onBackToLearn }) 
 
   // Memilih opsi jawaban
   const handleSelectOption = (index) => {
-    if (isAnswered) return;
+    if (isAnswered || !currentQ) return;
 
     setSelectedOption(index);
     setIsAnswered(true);
@@ -50,11 +76,13 @@ export default function QuizView({ category, onSwitchCategory, onBackToLearn }) 
       ...prev,
       {
         questionChar: currentQ.questionChar,
+        typeBadge: currentQ.typeBadge,
         selectedOption: index,
         correctIndex: currentQ.correctAnswerIndex,
         isCorrect,
         prompt: currentQ.prompt,
         options: currentQ.options,
+        explanation: currentQ.explanation,
       },
     ]);
   };
@@ -70,8 +98,37 @@ export default function QuizView({ category, onSwitchCategory, onBackToLearn }) 
     }
   };
 
-  // Reset kuis ulang
+  // Fungsi saat tombol "Acak Soal Baru" ditekan oleh pengguna
+  const handleShuffleQuestions = () => {
+    setIsRandomMode(true);
+    setQuestions(generateRandomQuiz(category, 10));
+    setCurrentQuestionIndex(0);
+    setSelectedOption(null);
+    setIsAnswered(false);
+    setScore(0);
+    setUserAnswers([]);
+    setIsCompleted(false);
+  };
+
+  // Mengembalikan ke soal standar
+  const handleResetToStandard = () => {
+    setIsRandomMode(false);
+    setQuestions(getStandardQuestions(category));
+    setCurrentQuestionIndex(0);
+    setSelectedOption(null);
+    setIsAnswered(false);
+    setScore(0);
+    setUserAnswers([]);
+    setIsCompleted(false);
+  };
+
+  // Reset kuis saat ini
   const handleRestartQuiz = () => {
+    if (isRandomMode) {
+      setQuestions(generateRandomQuiz(category, 10));
+    } else {
+      setQuestions(getStandardQuestions(category));
+    }
     setCurrentQuestionIndex(0);
     setSelectedOption(null);
     setIsAnswered(false);
@@ -86,20 +143,21 @@ export default function QuizView({ category, onSwitchCategory, onBackToLearn }) 
     return 'Kuis Hiragana';
   };
 
-  const progressPercent = Math.round(((currentQuestionIndex + 1) / questions.length) * 100);
+  const progressPercent = questions.length > 0 
+    ? Math.round(((currentQuestionIndex + 1) / questions.length) * 100)
+    : 0;
 
   // ===================== HALAMAN HASIL KUIS (SCORECARD) =====================
   if (isCompleted) {
     const finalPercentage = Math.round((score / questions.length) * 100);
-    let evaluation = 'Terus berlatih untuk memperkuat ingatan aksara Jepang Anda!';
-    let badgeColor = 'bg-amber-100 text-amber-800 border-amber-200';
+    let evaluation = isRandomMode
+      ? 'Hebat! Anda berhasil menyelesaikan paket latihan soal acak.'
+      : 'Terus berlatih untuk memperkuat ingatan aksara Jepang Anda.';
 
     if (finalPercentage >= 80) {
-      evaluation = 'Luar biasa! Penguasaan karakter Jepang Anda sangat baik.';
-      badgeColor = 'bg-emerald-100 text-emerald-800 border-emerald-200';
+      evaluation = 'Luar biasa! Penguasaan karakter Jepang Anda sangat mantap dan akurat.';
     } else if (finalPercentage >= 50) {
-      evaluation = 'Bagus! Anda sudah menguasai sebagian besar karakter dengan baik.';
-      badgeColor = 'bg-blue-100 text-blue-800 border-blue-200';
+      evaluation = 'Bagus! Anda sudah mengenali sebagian besar karakter dengan baik.';
     }
 
     return (
@@ -112,7 +170,7 @@ export default function QuizView({ category, onSwitchCategory, onBackToLearn }) 
 
           <div className="space-y-1">
             <span className="text-xs font-semibold uppercase tracking-wider text-slate-400">
-              Hasil Akhir Latihan
+              Hasil Akhir Latihan ({isRandomMode ? 'Mode Acak' : 'Mode Standar'})
             </span>
             <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900">
               {getCategoryTitle()} Selesai!
@@ -137,34 +195,53 @@ export default function QuizView({ category, onSwitchCategory, onBackToLearn }) 
 
           {/* Ringkasan Jawaban Soal */}
           <div className="text-left space-y-3 pt-2">
-            <h3 className="text-sm font-bold text-slate-800">Ringkasan Soal:</h3>
-            <div className="max-h-60 overflow-y-auto space-y-2 pr-1 text-xs">
+            <div className="flex items-center justify-between">
+              <h3 className="text-sm font-bold text-slate-800">Ringkasan Soal:</h3>
+              <span className="text-xs text-slate-500">
+                {isRandomMode ? 'Mode Soal Acak' : 'Mode Soal Standar'}
+              </span>
+            </div>
+            <div className="max-h-72 overflow-y-auto space-y-2.5 pr-1 text-xs">
               {userAnswers.map((item, idx) => (
                 <div
                   key={idx}
-                  className={`p-3 rounded-xl border flex items-center justify-between ${
+                  className={`p-3.5 rounded-xl border flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 ${
                     item.isCorrect
                       ? 'bg-emerald-50/60 border-emerald-200 text-emerald-950'
                       : 'bg-rose-50/60 border-rose-200 text-rose-950'
                   }`}
                 >
-                  <div className="flex items-center gap-3">
-                    <span className="font-japanese text-xl font-bold">{item.questionChar}</span>
+                  <div className="flex items-start gap-3">
+                    <span className="font-japanese text-xl font-bold shrink-0 bg-white/70 px-2 py-1 rounded-lg border border-slate-200">
+                      {item.questionChar}
+                    </span>
                     <div>
-                      <div className="font-medium text-slate-700">Soal {idx + 1}</div>
-                      <div className="text-slate-500 text-[11px]">
-                        Jawaban Anda: {item.options[item.selectedOption]} | Kunci: {item.options[item.correctIndex]}
+                      <div className="flex items-center gap-2 mb-0.5">
+                        <span className="font-bold text-slate-800">Soal {idx + 1}</span>
+                        {item.typeBadge && (
+                          <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-white border border-slate-200 text-slate-600">
+                            {item.typeBadge}
+                          </span>
+                        )}
                       </div>
+                      <div className="text-slate-600 text-[11px] leading-relaxed">
+                        Jawaban Anda: <span className="font-semibold">{item.options[item.selectedOption]}</span> | Kunci: <span className="font-semibold text-emerald-700">{item.options[item.correctIndex]}</span>
+                      </div>
+                      {item.explanation && (
+                        <div className="text-slate-500 text-[10px] mt-1 pt-1 border-t border-slate-200/60">
+                          {item.explanation}
+                        </div>
+                      )}
                     </div>
                   </div>
-                  <div>
+                  <div className="shrink-0 self-end sm:self-center">
                     {item.isCorrect ? (
-                      <span className="inline-flex items-center gap-1 text-emerald-700 font-semibold text-[11px]">
-                        <CheckCircle size={15} /> Benar
+                      <span className="inline-flex items-center gap-1 text-emerald-700 font-semibold text-[11px] bg-white/80 px-2 py-1 rounded-lg border border-emerald-200">
+                        <CheckCircle size={14} /> Benar
                       </span>
                     ) : (
-                      <span className="inline-flex items-center gap-1 text-rose-700 font-semibold text-[11px]">
-                        <XCircle size={15} /> Salah
+                      <span className="inline-flex items-center gap-1 text-rose-700 font-semibold text-[11px] bg-white/80 px-2 py-1 rounded-lg border border-rose-200">
+                        <XCircle size={14} /> Salah
                       </span>
                     )}
                   </div>
@@ -174,19 +251,27 @@ export default function QuizView({ category, onSwitchCategory, onBackToLearn }) 
           </div>
 
           {/* Action Buttons */}
-          <div className="pt-4 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-center gap-3">
+          <div className="pt-4 border-t border-slate-100 flex flex-wrap items-center justify-center gap-3">
             <button
               type="button"
               onClick={handleRestartQuiz}
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-crimson-600 hover:bg-crimson-700 text-white font-semibold text-sm transition-colors shadow-sm"
+              className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-crimson-600 hover:bg-crimson-700 text-white font-semibold text-sm transition-colors shadow-sm"
             >
               <RotateCcw size={16} />
-              <span>Coba Kuis Lagi</span>
+              <span>Ulangi Kuis Ini</span>
+            </button>
+            <button
+              type="button"
+              onClick={handleShuffleQuestions}
+              className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-white border border-crimson-200 hover:bg-crimson-50 text-crimson-700 font-semibold text-sm transition-colors shadow-2xs"
+            >
+              <Shuffle size={16} />
+              <span>Acak Soal Baru</span>
             </button>
             <button
               type="button"
               onClick={() => onBackToLearn(category)}
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-semibold text-sm transition-colors"
+              className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-semibold text-sm transition-colors"
             >
               <BookOpen size={16} />
               <span>Kembali Belajar {category}</span>
@@ -198,11 +283,14 @@ export default function QuizView({ category, onSwitchCategory, onBackToLearn }) 
   }
 
   // ===================== HALAMAN SOAL KUIS AKTIF =====================
+  if (!currentQ) return null;
+
   return (
     <div className="py-8 max-w-2xl mx-auto px-4 sm:px-6 space-y-6">
       {/* Quiz Category Tabs & Header */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        {/* Tab Kategori (Hiragana / Katakana / Kanji) - Penuh ke kanan di Mobile */}
+        <div className="grid grid-cols-3 sm:flex sm:items-center gap-2 w-full sm:w-auto bg-slate-100/70 p-1 rounded-xl sm:bg-transparent sm:p-0">
           {['hiragana', 'katakana', 'kanji'].map((cat) => (
             <button
               key={cat}
@@ -212,7 +300,7 @@ export default function QuizView({ category, onSwitchCategory, onBackToLearn }) 
                   onSwitchCategory(cat);
                 }
               }}
-              className={`px-3 py-1.5 rounded-lg text-xs font-semibold capitalize transition-all ${
+              className={`py-2 px-3 sm:py-1.5 sm:px-3 rounded-lg text-xs font-semibold capitalize transition-all text-center flex items-center justify-center ${
                 category === cat
                   ? 'bg-crimson-600 text-white shadow-sm'
                   : 'bg-white text-slate-600 border border-slate-200 hover:bg-slate-50'
@@ -223,14 +311,41 @@ export default function QuizView({ category, onSwitchCategory, onBackToLearn }) 
           ))}
         </div>
 
-        <button
-          type="button"
-          onClick={() => onBackToLearn(category)}
-          className="text-xs text-slate-500 hover:text-slate-800 font-medium inline-flex items-center gap-1"
-        >
-          <BookOpen size={14} />
-          <span>Lihat Kartu Belajar</span>
-        </button>
+        {/* Tombol Aksi (Acak Soal & Kartu Belajar) - Penuh ke kanan di Mobile */}
+        <div className="flex items-center gap-2 w-full sm:w-auto">
+          {isRandomMode ? (
+            <button
+              type="button"
+              onClick={handleResetToStandard}
+              className="flex-1 sm:flex-initial justify-center px-3 py-2 sm:py-1.5 rounded-lg text-xs font-semibold text-slate-600 bg-white border border-slate-200 hover:bg-slate-50 flex items-center gap-1.5 transition-colors shadow-2xs"
+              title="Kembali ke urutan soal standar"
+            >
+              <span>Soal Standar</span>
+            </button>
+          ) : null}
+
+          <button
+            type="button"
+            onClick={handleShuffleQuestions}
+            className={`flex-1 sm:flex-initial justify-center px-3 py-2 sm:py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-all shadow-2xs ${
+              isRandomMode
+                ? 'bg-crimson-50 border border-crimson-200 text-crimson-700 hover:bg-crimson-100'
+                : 'bg-white border border-slate-200 text-slate-700 hover:border-crimson-300 hover:text-crimson-600 hover:bg-crimson-50/50'
+            }`}
+            title="Klik untuk mengacak soal sekarang"
+          >
+            <Shuffle size={13} className="text-crimson-600" />
+            <span>{isRandomMode ? 'Acak Soal Lagi' : 'Acak Soal'}</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => onBackToLearn(category)}
+            className="flex-1 sm:flex-initial justify-center px-3 py-2 sm:py-1.5 rounded-lg text-xs text-slate-600 hover:text-slate-900 bg-white border border-slate-200 sm:border-transparent sm:bg-transparent hover:bg-slate-50 sm:hover:bg-transparent font-medium inline-flex items-center gap-1.5 transition-colors"
+          >
+            <BookOpen size={14} />
+            <span>Kartu Belajar</span>
+          </button>
+        </div>
       </div>
 
       {/* Main Quiz Card */}
@@ -238,8 +353,17 @@ export default function QuizView({ category, onSwitchCategory, onBackToLearn }) 
         {/* Progress Bar & Counter */}
         <div className="space-y-2">
           <div className="flex items-center justify-between text-xs font-semibold text-slate-500">
-            <span>
-              Soal {currentQuestionIndex + 1} dari {questions.length}
+            <span className="flex items-center gap-1.5">
+              <span>Soal {currentQuestionIndex + 1} dari {questions.length}</span>
+              <span className="w-1 h-1 rounded-full bg-slate-300"></span>
+              {isRandomMode ? (
+                <span className="text-crimson-600 font-bold flex items-center gap-1">
+                  <Sparkles size={12} />
+                  <span>Mode Acak</span>
+                </span>
+              ) : (
+                <span className="text-slate-500 font-medium">Mode Standar</span>
+              )}
             </span>
             <span>Skor: {score}</span>
           </div>
@@ -251,24 +375,43 @@ export default function QuizView({ category, onSwitchCategory, onBackToLearn }) 
           </div>
         </div>
 
-        {/* Karakter Soal & Speaker */}
-        <div className="py-4 text-center bg-slate-50/70 rounded-2xl border border-slate-100 relative">
+        {/* Karakter Soal, Badge Kategori & Speaker Audio */}
+        <div className="py-6 px-4 text-center bg-slate-50/80 rounded-2xl border border-slate-200/80 relative">
+          {/* Badge Tipe Soal di Kiri Atas */}
+          {currentQ.typeBadge && (
+            <div className="absolute left-3 top-3 px-2.5 py-1 rounded-lg text-[10px] font-bold bg-white text-crimson-700 border border-crimson-100 shadow-2xs flex items-center gap-1">
+              <span>{currentQ.typeBadge}</span>
+            </div>
+          )}
+
+          {/* Tombol Speaker di Kanan Atas */}
           <button
             type="button"
             onClick={handlePlayQuestionAudio}
             className={`absolute right-3 top-3 p-2 rounded-lg text-slate-500 hover:text-crimson-600 hover:bg-white transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-crimson-600 ${
-              isPlayingAudio ? 'bg-white text-crimson-600 playing-audio shadow-sm' : ''
+              isPlayingAudio ? 'bg-white text-crimson-600 playing-audio shadow-sm ring-1 ring-crimson-500' : 'bg-white/60 border border-slate-200/60'
             }`}
-            title="Dengarkan suara karakter"
+            title="Dengarkan pengucapan audio karakter"
             aria-label="Dengarkan pengucapan soal"
           >
-            <Volume2 size={20} />
+            <Volume2 size={18} />
           </button>
 
-          <div className="font-japanese text-6xl sm:text-7xl font-normal text-slate-900 mb-2 select-all">
+          {/* Tampilan Huruf / Kata yang Skalabel */}
+          <div
+            className={`font-japanese font-normal text-slate-900 mb-2 select-all tracking-normal ${
+              currentQ.questionChar.length > 5
+                ? 'text-2xl sm:text-3xl'
+                : currentQ.questionChar.length > 2
+                ? 'text-4xl sm:text-5xl'
+                : 'text-6xl sm:text-7xl'
+            }`}
+          >
             {currentQ.questionChar}
           </div>
-          <div className="text-sm text-slate-600 font-medium">{currentQ.prompt}</div>
+          <div className="text-sm sm:text-base text-slate-700 font-medium px-2 leading-snug">
+            {currentQ.prompt}
+          </div>
         </div>
 
         {/* Pilihan Ganda (4 Opsi) */}
@@ -297,15 +440,15 @@ export default function QuizView({ category, onSwitchCategory, onBackToLearn }) 
                 onClick={() => handleSelectOption(idx)}
                 className={`w-full p-4 rounded-xl border text-left text-sm transition-all flex items-center justify-between group focus:outline-none focus-visible:ring-2 focus-visible:ring-crimson-600 ${buttonStyle}`}
               >
-                <div className="flex items-center gap-3">
-                  <span className="w-6 h-6 rounded-lg bg-slate-100 group-hover:bg-slate-200 text-slate-600 flex items-center justify-center font-bold text-xs uppercase">
+                <div className="flex items-center gap-3 min-w-0">
+                  <span className="w-6 h-6 shrink-0 rounded-lg bg-slate-100 group-hover:bg-slate-200 text-slate-600 flex items-center justify-center font-bold text-xs uppercase">
                     {String.fromCharCode(65 + idx)}
                   </span>
-                  <span className="font-medium text-base">{option}</span>
+                  <span className="font-medium text-base truncate">{option}</span>
                 </div>
 
                 {isAnswered && (
-                  <div>
+                  <div className="shrink-0 ml-2">
                     {isCorrect && <CheckCircle size={18} className="text-emerald-600" />}
                     {isSelected && !isCorrect && <XCircle size={18} className="text-rose-600" />}
                   </div>
@@ -360,3 +503,4 @@ export default function QuizView({ category, onSwitchCategory, onBackToLearn }) 
     </div>
   );
 }
+

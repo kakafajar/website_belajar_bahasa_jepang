@@ -8,13 +8,12 @@ import {
   RotateCcw,
   Eye,
   EyeOff,
-  Sparkles,
 } from './Icons';
 import { hiraganaStrokeGuide } from '../data/hiraganaStrokeData';
 import { playJapaneseAudio } from '../data/japaneseData';
 
-// Pemetaan huruf Dakuon & Handakuon ke huruf dasar
-const dakuonBaseMap = {
+// ==================== PEMETAAN HIRAGANA ====================
+const hiraganaDakuonBaseMap = {
   // G -> K
   'が': { baseChar: 'か', baseRomaji: 'ka', note: 'Ditulis mengikuti huruf dasar "か" ditambah 2 titik tenten (゛) di kanan atas.' },
   'ぎ': { baseChar: 'き', baseRomaji: 'ki', note: 'Ditulis mengikuti huruf dasar "き" ditambah 2 titik tenten (゛) di kanan atas.' },
@@ -47,8 +46,7 @@ const dakuonBaseMap = {
   'ぽ': { baseChar: 'ほ', baseRomaji: 'ho', note: 'Ditulis mengikuti huruf dasar "ほ" ditambah lingkaran kecil maru (゜) di kanan atas.' },
 };
 
-// Pemetaan 46 huruf dasar Seion ke romaji file jepang.org
-const seionCharToRomaji = {
+const hiraganaSeionToRomaji = {
   'あ': 'a', 'い': 'i', 'う': 'u', 'え': 'e', 'お': 'o',
   'か': 'ka', 'き': 'ki', 'く': 'ku', 'け': 'ke', 'こ': 'ko',
   'さ': 'sa', 'し': 'shi', 'す': 'su', 'せ': 'se', 'そ': 'so',
@@ -61,28 +59,115 @@ const seionCharToRomaji = {
   'わ': 'wa', 'を': 'wo', 'ん': 'n',
 };
 
-// Fungsi pencocokan animasi suku kata dasar untuk karakter kombinasi (Yoon), dakuon, maupun seion
-function resolveAnimationData(characterItem) {
+// ==================== PEMETAAN KATAKANA ====================
+const katakanaDakuonBaseMap = {
+  // G -> K
+  'ガ': { baseChar: 'カ', baseRomaji: 'ka', note: 'Ditulis mengikuti huruf dasar "カ" ditambah 2 titik tenten (゛) di kanan atas.' },
+  'ギ': { baseChar: 'キ', baseRomaji: 'ki', note: 'Ditulis mengikuti huruf dasar "キ" ditambah 2 titik tenten (゛) di kanan atas.' },
+  'グ': { baseChar: 'ク', baseRomaji: 'ku', note: 'Ditulis mengikuti huruf dasar "ク" ditambah 2 titik tenten (゛) di kanan atas.' },
+  'ゲ': { baseChar: 'ケ', baseRomaji: 'ke', note: 'Ditulis mengikuti huruf dasar "ケ" ditambah 2 titik tenten (゛) di kanan atas.' },
+  'ゴ': { baseChar: 'コ', baseRomaji: 'ko', note: 'Ditulis mengikuti huruf dasar "コ" ditambah 2 titik tenten (゛) di kanan atas.' },
+  // Z -> S
+  'ザ': { baseChar: 'サ', baseRomaji: 'sa', note: 'Ditulis mengikuti huruf dasar "サ" ditambah 2 titik tenten (゛) di kanan atas.' },
+  'ジ': { baseChar: 'シ', baseRomaji: 'shi', note: 'Ditulis mengikuti huruf dasar "シ" ditambah 2 titik tenten (゛) di kanan atas.' },
+  'ズ': { baseChar: 'ス', baseRomaji: 'su', note: 'Ditulis mengikuti huruf dasar "ス" ditambah 2 titik tenten (゛) di kanan atas.' },
+  'ゼ': { baseChar: 'セ', baseRomaji: 'se', note: 'Ditulis mengikuti huruf dasar "セ" ditambah 2 titik tenten (゛) di kanan atas.' },
+  'ゾ': { baseChar: 'ソ', baseRomaji: 'so', note: 'Ditulis mengikuti huruf dasar "ソ" ditambah 2 titik tenten (゛) di kanan atas.' },
+  // D -> T
+  'ダ': { baseChar: 'タ', baseRomaji: 'ta', note: 'Ditulis mengikuti huruf dasar "タ" ditambah 2 titik tenten (゛) di kanan atas.' },
+  'ヂ': { baseChar: 'チ', baseRomaji: 'chi', note: 'Ditulis mengikuti huruf dasar "チ" ditambah 2 titik tenten (゛) di kanan atas.' },
+  'ヅ': { baseChar: 'ツ', baseRomaji: 'tsu', note: 'Ditulis mengikuti huruf dasar "ツ" ditambah 2 titik tenten (゛) di kanan atas.' },
+  'デ': { baseChar: 'テ', baseRomaji: 'te', note: 'Ditulis mengikuti huruf dasar "テ" ditambah 2 titik tenten (゛) di kanan atas.' },
+  'ド': { baseChar: 'ト', baseRomaji: 'to', note: 'Ditulis mengikuti huruf dasar "ト" ditambah 2 titik tenten (゛) di kanan atas.' },
+  // B -> H
+  'バ': { baseChar: 'ハ', baseRomaji: 'ha', note: 'Ditulis mengikuti huruf dasar "ハ" ditambah 2 titik tenten (゛) di kanan atas.' },
+  'ビ': { baseChar: 'ヒ', baseRomaji: 'hi', note: 'Ditulis mengikuti huruf dasar "ヒ" ditambah 2 titik tenten (゛) di kanan atas.' },
+  'ブ': { baseChar: 'フ', baseRomaji: 'fu', note: 'Ditulis mengikuti huruf dasar "フ" ditambah 2 titik tenten (゛) di kanan atas.' },
+  'ベ': { baseChar: 'ヘ', baseRomaji: 'he', note: 'Ditulis mengikuti huruf dasar "ヘ" ditambah 2 titik tenten (゛) di kanan atas.' },
+  'ボ': { baseChar: 'ホ', baseRomaji: 'ho', note: 'Ditulis mengikuti huruf dasar "ホ" ditambah 2 titik tenten (゛) di kanan atas.' },
+  // P -> H (Handakuon)
+  'パ': { baseChar: 'ハ', baseRomaji: 'ha', note: 'Ditulis mengikuti huruf dasar "ハ" ditambah lingkaran kecil maru (゜) di kanan atas.' },
+  'ピ': { baseChar: 'ヒ', baseRomaji: 'hi', note: 'Ditulis mengikuti huruf dasar "ヒ" ditambah lingkaran kecil maru (゜) di kanan atas.' },
+  'プ': { baseChar: 'フ', baseRomaji: 'fu', note: 'Ditulis mengikuti huruf dasar "フ" ditambah lingkaran kecil maru (゜) di kanan atas.' },
+  'ペ': { baseChar: 'ヘ', baseRomaji: 'he', note: 'Ditulis mengikuti huruf dasar "ヘ" ditambah lingkaran kecil maru (゜) di kanan atas.' },
+  'ポ': { baseChar: 'ホ', baseRomaji: 'ho', note: 'Ditulis mengikuti huruf dasar "ホ" ditambah lingkaran kecil maru (゜) di kanan atas.' },
+  // V -> U (Katakana khusus)
+  'ヴ': { baseChar: 'ウ', baseRomaji: 'u', note: 'Ditulis mengikuti huruf dasar "ウ" ditambah 2 titik tenten (゛).' },
+};
+
+const katakanaSeionToRomaji = {
+  'ア': 'a', 'イ': 'i', 'ウ': 'u', 'エ': 'e', 'オ': 'o',
+  'カ': 'ka', 'キ': 'ki', 'ク': 'ku', 'ケ': 'ke', 'コ': 'ko',
+  'サ': 'sa', 'シ': 'shi', 'ス': 'su', 'セ': 'se', 'ソ': 'so',
+  'タ': 'ta', 'チ': 'chi', 'ツ': 'tsu', 'テ': 'te', 'ト': 'to',
+  'ナ': 'na', 'ニ': 'ni', 'ヌ': 'nu', 'ネ': 'ne', 'ノ': 'no',
+  'ハ': 'ha', 'ヒ': 'hi', 'フ': 'fu', 'ヘ': 'he', 'ホ': 'ho',
+  'マ': 'ma', 'ミ': 'mi', 'ム': 'mu', 'メ': 'me', 'モ': 'mo',
+  'ヤ': 'ya', 'ユ': 'yu', 'ヨ': 'yo',
+  'ラ': 'ra', 'リ': 'ri', 'ル': 'ru', 'レ': 're', 'ロ': 'ro',
+  'ワ': 'wa', 'ヲ': 'wo', 'ン': 'n',
+};
+
+// Pemetaan huruf kecil Katakana ke huruf dasar penuh
+const katakanaSmallToFull = {
+  'ャ': { baseChar: 'ヤ', baseRomaji: 'ya' },
+  'ュ': { baseChar: 'ユ', baseRomaji: 'yu' },
+  'ョ': { baseChar: 'ヨ', baseRomaji: 'yo' },
+  'ァ': { baseChar: 'ア', baseRomaji: 'a' },
+  'ィ': { baseChar: 'イ', baseRomaji: 'i' },
+  'ゥ': { baseChar: 'ウ', baseRomaji: 'u' },
+  'ェ': { baseChar: 'エ', baseRomaji: 'e' },
+  'ォ': { baseChar: 'オ', baseRomaji: 'o' },
+};
+
+// Helper untuk mendapatkan link animasi gif resmi dari jepang.org
+// Pada tutorial jepang.org (https://jepang.org/tutorial/huruf-katakana-dan-cara-penulisannya),
+// berkas animasi Katakana berakhiran 'k' (contoh: ak.gif, shik.gif, tsuk.gif, fuk.gif, nk.gif),
+// sedangkan Hiragana tanpa akhiran 'k' (contoh: a.gif, shi.gif, tsu.gif, fu.gif, n.gif).
+function getJepangOrgGifUrl(romaji, isKatakana) {
+  const folder = isKatakana ? 'katakana' : 'hiragana';
+  const filename = isKatakana ? `${romaji}k.gif` : `${romaji}.gif`;
+  return `https://jepang.org/images/tutorial/${folder}/${filename}`;
+}
+
+// Fungsi pencocokan animasi suku kata dasar untuk Hiragana & Katakana
+function resolveAnimationData(characterItem, scriptType) {
   const char = characterItem.char || '';
   const romaji = (characterItem.romaji || '').toLowerCase().trim();
 
-  // 1. Kasus Kombinasi (Yoon, 2 huruf seperti きゃ, しゅ, ちょ, ぎょ, dll.)
+  // Deteksi apakah Katakana (berdasarkan prop scriptType atau karakter unicode Katakana)
+  const isKatakana = scriptType === 'katakana' || /[\u30A0-\u30FF]/.test(char);
+  const scriptName = isKatakana ? 'Katakana' : 'Hiragana';
+
+  const dakuonMap = isKatakana ? katakanaDakuonBaseMap : hiraganaDakuonBaseMap;
+  const seionMap = isKatakana ? katakanaSeionToRomaji : hiraganaSeionToRomaji;
+
+  // 1. Kasus Kombinasi (2 karakter, misal きゃ / キャ, しゅ / シュ, dll.)
   if (char.length > 1) {
     const firstChar = char[0];
     const secondSmallChar = char[1];
 
-    // Petakan huruf kecil pendamping (ゃ, ゅ, ょ) ke huruf dasar (や, ゆ, よ)
-    const secondBaseChar = secondSmallChar === 'ゃ' ? 'や' : secondSmallChar === 'ゅ' ? 'ゆ' : 'よ';
-    const secondBaseRomaji = secondSmallChar === 'ゃ' ? 'ya' : secondSmallChar === 'ゅ' ? 'yu' : 'yo';
+    let secondBaseChar = '';
+    let secondBaseRomaji = '';
 
-    // Cek apakah huruf pertama adalah dakuon (misal ぎ, じ, び, ぴ)
-    const firstDakuonInfo = dakuonBaseMap[firstChar];
+    if (isKatakana) {
+      const smallInfo = katakanaSmallToFull[secondSmallChar] || { baseChar: 'ヤ', baseRomaji: 'ya' };
+      secondBaseChar = smallInfo.baseChar;
+      secondBaseRomaji = smallInfo.baseRomaji;
+    } else {
+      secondBaseChar = secondSmallChar === 'ゃ' ? 'や' : secondSmallChar === 'ゅ' ? 'ゆ' : 'よ';
+      secondBaseRomaji = secondSmallChar === 'ゃ' ? 'ya' : secondSmallChar === 'ゅ' ? 'yu' : 'yo';
+    }
+
+    const firstDakuonInfo = dakuonMap[firstChar];
     const firstBaseChar = firstDakuonInfo ? firstDakuonInfo.baseChar : firstChar;
-    const firstBaseRomaji = firstDakuonInfo ? firstDakuonInfo.baseRomaji : (seionCharToRomaji[firstChar] || 'ki');
+    const firstBaseRomaji = firstDakuonInfo ? firstDakuonInfo.baseRomaji : (seionMap[firstChar] || 'ki');
 
     return {
       type: 'yoon',
-      badge: 'Kombinasi (Yōon)',
+      isKatakana,
+      scriptName,
+      badge: `${scriptName} Kombinasi`,
       description: `Huruf kombinasi ${char} ditulis dengan menggabungkan huruf ${firstChar} dan huruf pendamping kecil ${secondSmallChar} (sekitar 1/2 ukuran normal).`,
       parts: [
         {
@@ -91,7 +176,8 @@ function resolveAnimationData(characterItem) {
           displayChar: firstChar,
           baseChar: firstBaseChar,
           baseRomaji: firstBaseRomaji,
-          gifUrl: `https://jepang.org/images/tutorial/hiragana/${firstBaseRomaji}.gif`,
+          gifUrl: getJepangOrgGifUrl(firstBaseRomaji, isKatakana),
+          wikimediaFallback: `https://commons.wikimedia.org/wiki/Special:FilePath/${scriptName}_${firstBaseChar}_stroke_order_animation.gif`,
           note: firstDakuonInfo
             ? `Tulis huruf dasar "${firstBaseChar}" lalu tambahkan tanda tenten (゛).`
             : `Tulis huruf dasar "${firstChar}" secara utuh.`,
@@ -102,19 +188,25 @@ function resolveAnimationData(characterItem) {
           displayChar: secondSmallChar,
           baseChar: secondBaseChar,
           baseRomaji: secondBaseRomaji,
-          gifUrl: `https://jepang.org/images/tutorial/hiragana/${secondBaseRomaji}.gif`,
+          gifUrl: getJepangOrgGifUrl(secondBaseRomaji, isKatakana),
+          wikimediaFallback: `https://commons.wikimedia.org/wiki/Special:FilePath/${scriptName}_${secondBaseChar}_stroke_order_animation.gif`,
           note: `Tulis huruf "${secondBaseChar}" dengan ukuran lebih kecil (1/2 proporsi normal) di sisi kanan bawah huruf pertama.`,
         },
       ],
     };
   }
 
-  // 2. Kasus Dakuon & Handakuon (misal が, ざ, だ, ば, ぱ)
-  if (dakuonBaseMap[char]) {
-    const info = dakuonBaseMap[char];
+  // 2. Kasus Dakuon & Handakuon (misal が / ガ, ぱ / パ)
+  if (dakuonMap[char]) {
+    const info = dakuonMap[char];
+    const isHandakuon = isKatakana ? char.match(/[パピプペポ]/) : char.match(/[ぱぴぷぺぽ]/);
+    const badgeLabel = isHandakuon ? `${scriptName} Handakuon (Maru)` : `${scriptName} Dakuon (Tenten)`;
+
     return {
       type: 'dakuon',
-      badge: char.match(/[ぱぴぷぺぽ]/) ? 'Handakuon (Maru)' : 'Dakuon (Tenten)',
+      isKatakana,
+      scriptName,
+      badge: badgeLabel,
       description: `Huruf ${char} (${romaji}) menggunakan pola penulisan huruf dasar ${info.baseChar} (${info.baseRomaji}) dengan tanda aksen di kanan atas.`,
       parts: [
         {
@@ -123,7 +215,8 @@ function resolveAnimationData(characterItem) {
           displayChar: char,
           baseChar: info.baseChar,
           baseRomaji: info.baseRomaji,
-          gifUrl: `https://jepang.org/images/tutorial/hiragana/${info.baseRomaji}.gif`,
+          gifUrl: getJepangOrgGifUrl(info.baseRomaji, isKatakana),
+          wikimediaFallback: `https://commons.wikimedia.org/wiki/Special:FilePath/${scriptName}_${info.baseChar}_stroke_order_animation.gif`,
           note: info.note,
         },
       ],
@@ -131,11 +224,13 @@ function resolveAnimationData(characterItem) {
   }
 
   // 3. Kasus Seion Dasar (46 huruf murni)
-  const baseRomaji = seionCharToRomaji[char] || romaji;
+  const baseRomaji = seionMap[char] || romaji;
   return {
     type: 'seion',
-    badge: 'Hiragana Dasar',
-    description: `Huruf dasar Hiragana ${char} (${romaji}). Ikuti alur kuas kaligrafi pada animasi.`,
+    isKatakana,
+    scriptName,
+    badge: `${scriptName} Dasar`,
+    description: `Huruf dasar ${scriptName} ${char} (${romaji}). Ikuti alur kuas kaligrafi pada animasi resmi.`,
     parts: [
       {
         id: 'part-1',
@@ -143,21 +238,21 @@ function resolveAnimationData(characterItem) {
         displayChar: char,
         baseChar: char,
         baseRomaji: baseRomaji,
-        gifUrl: `https://jepang.org/images/tutorial/hiragana/${baseRomaji}.gif`,
+        gifUrl: getJepangOrgGifUrl(baseRomaji, isKatakana),
+        wikimediaFallback: `https://commons.wikimedia.org/wiki/Special:FilePath/${scriptName}_${char}_stroke_order_animation.gif`,
         note: 'Ikuti arah dan lekukan kuas dari goresan pertama hingga selesai.',
       },
     ],
   };
 }
 
-export default function StrokeModal({ characterItem, onClose }) {
+export default function StrokeModal({ characterItem, scriptType, onClose }) {
   if (!characterItem) return null;
 
   const char = characterItem.char;
-  const romaji = (characterItem.romaji || '').toLowerCase().trim();
 
-  // Dapatkan konfigurasi animasi huruf (termasuk matching untuk kombinasi & dakuon)
-  const animConfig = resolveAnimationData(characterItem);
+  // Dapatkan konfigurasi animasi huruf (otomatis mengenali Hiragana / Katakana)
+  const animConfig = resolveAnimationData(characterItem, scriptType);
 
   // State untuk tab bagian huruf (khusus huruf kombinasi yang memiliki 2 bagian)
   const [activePartIndex, setActivePartIndex] = useState(0);
@@ -203,7 +298,7 @@ export default function StrokeModal({ characterItem, onClose }) {
     setGifLoadError(false);
   };
 
-  // Logika interaktif kanvas
+  // Logika interaktif kanvas latihan
   const clearCanvas = () => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -268,7 +363,7 @@ export default function StrokeModal({ characterItem, onClose }) {
 
   // URL GIF animasi yang sedang aktif
   const currentGifUrl = `${activePart.gifUrl}?t=${gifTimestamp}`;
-  const fallbackGifUrl = `https://commons.wikimedia.org/wiki/Special:FilePath/Hiragana_${activePart.baseChar}_stroke_order_animation.gif`;
+  const fallbackGifUrl = activePart.wikimediaFallback;
 
   return (
     <div
@@ -298,7 +393,7 @@ export default function StrokeModal({ characterItem, onClose }) {
                 </span>
               </div>
               <p className="text-xs text-slate-500 font-medium">
-                Panduan animasi kaligrafi resmi (Kakijun) Hiragana Jepang
+                Panduan animasi kaligrafi resmi (Kakijun) {animConfig.scriptName} Jepang
               </p>
             </div>
           </div>
@@ -386,7 +481,7 @@ export default function StrokeModal({ characterItem, onClose }) {
                 <div className="relative w-full h-full p-4 flex items-center justify-center">
                   <img
                     src={gifLoadError ? fallbackGifUrl : currentGifUrl}
-                    alt={`Animasi penulisan Hiragana ${activePart.baseChar}`}
+                    alt={`Animasi penulisan ${animConfig.scriptName} ${activePart.baseChar}`}
                     onError={() => {
                       if (!gifLoadError) setGifLoadError(true);
                     }}

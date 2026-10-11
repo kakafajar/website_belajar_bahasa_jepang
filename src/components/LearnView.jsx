@@ -89,8 +89,8 @@ export default function LearnView({ category, onStartQuiz }) {
       <div className="bg-white rounded-2xl p-6 sm:p-8 border border-slate-200/90 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div className="space-y-2 max-w-2xl">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-crimson-50 text-crimson-700 border border-crimson-100">
-            <span>Bagan Lengkap Pembelajaran</span>
-            <span>•</span>
+            <span className="hidden sm:inline">Bagan Lengkap Pembelajaran</span>
+            <span className="hidden sm:inline">•</span>
             <span>{totalCharacters} Karakter Aktif</span>
           </div>
           <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight flex items-center gap-2">
@@ -104,14 +104,14 @@ export default function LearnView({ category, onStartQuiz }) {
         </div>
 
         {/* Action Controls: Mode Switcher & CTA Kuis */}
-        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
-          {/* Switcher Tampilan (khusus Hiragana / Katakana) */}
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full md:w-auto">
+          {/* Switcher Tampilan (khusus Hiragana / Katakana) - Penuh ke kanan di Mobile */}
           {category !== 'kanji' && (
-            <div className="inline-flex bg-slate-100 p-1 rounded-xl border border-slate-200">
+            <div className="grid grid-cols-2 sm:inline-flex w-full sm:w-auto bg-slate-100 p-1 rounded-xl border border-slate-200">
               <button
                 type="button"
                 onClick={() => setViewMode('chart')}
-                className={`inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg text-xs font-bold transition-all ${
+                className={`flex-1 sm:flex-initial inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg text-xs font-bold transition-all text-center ${
                   viewMode === 'chart'
                     ? 'bg-white text-crimson-700 shadow-sm'
                     : 'text-slate-600 hover:text-slate-900'
@@ -124,7 +124,7 @@ export default function LearnView({ category, onStartQuiz }) {
               <button
                 type="button"
                 onClick={() => setViewMode('cards')}
-                className={`inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg text-xs font-bold transition-all ${
+                className={`flex-1 sm:flex-initial inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg text-xs font-bold transition-all text-center ${
                   viewMode === 'cards'
                     ? 'bg-white text-crimson-700 shadow-sm'
                     : 'text-slate-600 hover:text-slate-900'
@@ -163,102 +163,186 @@ export default function LearnView({ category, onStartQuiz }) {
           </div>
 
           {/* Frame Bagan Poster Utama (Tabel Atas: Seion + Dakuon & Handakuon) */}
-          <div className="bg-white rounded-2xl border-2 border-crimson-500/80 p-4 sm:p-6 shadow-sm overflow-x-auto">
-            <div className="min-w-[760px] space-y-6">
-              {/* Header Bagan */}
+          <div className="bg-white rounded-2xl border-2 border-crimson-500/80 p-4 sm:p-6 shadow-sm">
+            <div className="space-y-6">
+              {/* Header Bagan Utama */}
               <div className="border-b-2 border-slate-200 pb-3 flex items-center justify-between">
                 <div className="flex items-center gap-3">
                   <span className="px-3 py-1 bg-crimson-600 text-white font-bold text-xs uppercase tracking-wider rounded-md">
                     Bagian 1
                   </span>
                   <span className="font-extrabold text-slate-900 text-lg sm:text-xl">
-                    Huruf Dasar (Seion) &amp; Bunyi Bersuara (Dakuon / Handakuon) {category === 'katakana' ? 'Katakana' : 'Hiragana'}
+                    Huruf Dasar (Seion) &amp; Bunyi Bersuara (Dakuon) {category === 'katakana' ? 'Katakana' : 'Hiragana'}
                   </span>
                 </div>
                 <div className="text-xs text-slate-500 font-medium hidden sm:block">
-                  Klik sel untuk memutar audio
+                  Disusun ke samping (Baris A sampai akhir) • Klik untuk audio
                 </div>
               </div>
 
-              {/* Grid Baris Tabel Atas */}
-              <div className="space-y-2">
-                {(chartLayout[category] || chartLayout.hiragana).mainTable.rows.map((rowItem, rIdx) => (
-                  <div key={rIdx} className="flex items-center gap-2">
-                    {/* Blok Kiri: Seion (10 Kolom Dasar: a, ka, sa, ta, na, ha, ma, ya, ra, wa) */}
-                    <div className="flex-1 grid grid-cols-10 gap-1.5 sm:gap-2">
-                      {rowItem.seion.map((cell, cIdx) => {
-                        if (!cell) {
-                          // Sel Kosong
-                          return (
-                            <div
-                              key={cIdx}
-                              className="h-16 sm:h-20 bg-slate-50/80 rounded-lg border border-dashed border-slate-200 flex items-center justify-center opacity-40 select-none"
-                            ></div>
-                          );
-                        }
+              {/* Grid 2 Kolom: Seion di Kiri, Dakuon di Kanan */}
+              <div className="grid grid-cols-1 xl:grid-cols-12 gap-6 items-start">
+                {/* Kolom Kiri: Huruf Dasar (Seion - 11 Baris x 5 Kolom Vokal) */}
+                <div className="xl:col-span-7 bg-slate-50/60 rounded-xl p-3 sm:p-4 border border-slate-200/90 space-y-3">
+                  <div className="flex items-center justify-between pb-2 border-b border-slate-200">
+                    <span className="font-bold text-slate-800 text-sm sm:text-base flex items-center gap-2">
+                      <span className="w-2.5 h-2.5 rounded-full bg-crimson-500"></span>
+                      Huruf Dasar (Seion • 清音)
+                    </span>
+                    <span className="text-[11px] font-semibold text-slate-500">46 Aksara Dasar</span>
+                  </div>
 
-                        const isPlaying = playingId === `main-${cell.char}`;
-                        return (
-                          <button
-                            key={cIdx}
-                            type="button"
-                            onClick={() => handlePlayAudio(`main-${cell.char}`, cell.char)}
-                            className={`h-16 sm:h-20 rounded-lg border transition-all flex flex-col items-center justify-center p-1 group relative ${
-                              isPlaying
-                                ? 'bg-crimson-50 border-crimson-500 ring-2 ring-crimson-500 shadow-sm'
-                                : 'bg-white border-slate-200 hover:border-crimson-400 hover:bg-slate-50 hover:shadow-sm'
-                            }`}
-                            title={`Dengarkan pelafalan ${cell.char} (${cell.romaji})`}
-                          >
-                            <span className="font-japanese text-2xl sm:text-3xl font-medium text-slate-900 group-hover:text-crimson-600 transition-colors leading-none">
-                              {cell.char}
-                            </span>
-                            <span className="text-[11px] sm:text-xs font-semibold text-slate-500 mt-1 font-mono tracking-tight">
-                              {cell.romaji}
-                            </span>
-                          </button>
-                        );
-                      })}
-                    </div>
+                  <div className="overflow-x-auto">
+                    <div className="min-w-[340px] space-y-2">
+                      {/* Header Kolom Vokal (a, i, u, e, o) */}
+                      <div className="grid grid-cols-[44px_repeat(5,1fr)] sm:grid-cols-[52px_repeat(5,1fr)] gap-1.5 sm:gap-2 text-center text-xs font-bold text-slate-600 uppercase tracking-wider py-1 bg-slate-200/70 rounded-lg">
+                        <div className="text-[10px] sm:text-xs text-slate-500">Baris</div>
+                        <div>a</div>
+                        <div>i</div>
+                        <div>u</div>
+                        <div>e</div>
+                        <div>o</div>
+                      </div>
 
-                    {/* Pembatas Kolom Tengah (Tenten / Maru divider) */}
-                    <div className="w-1 self-stretch bg-slate-200 rounded-full mx-1"></div>
+                      {/* Baris-Baris Huruf Seion (Ke samping dari A sampai N) */}
+                      {(chartLayout[category] || chartLayout.hiragana).seionRows.map((rowItem, rIdx) => (
+                        <div
+                          key={rIdx}
+                          className="grid grid-cols-[44px_repeat(5,1fr)] sm:grid-cols-[52px_repeat(5,1fr)] gap-1.5 sm:gap-2 items-center"
+                        >
+                          {/* Label Baris */}
+                          <div className="h-14 sm:h-16 flex items-center justify-center font-bold text-xs sm:text-sm text-slate-700 bg-white rounded-lg border border-slate-200/90 shadow-2xs select-none">
+                            {rowItem.rowName}
+                          </div>
 
-                    {/* Blok Kanan: Dakuon & Handakuon (5 Kolom: ga, za, da, ba, pa) */}
-                    <div className="w-[300px] sm:w-[340px] grid grid-cols-5 gap-1.5 sm:gap-2">
-                      {rowItem.dakuon.map((cell, cIdx) => {
-                        const isPlaying = playingId === `dakuon-${cell.char}`;
-                        return (
-                          <button
-                            key={cIdx}
-                            type="button"
-                            onClick={() => handlePlayAudio(`dakuon-${cell.char}`, cell.char)}
-                            className={`h-16 sm:h-20 rounded-lg border transition-all flex flex-col items-center justify-center p-1 group relative ${
-                              isPlaying
-                                ? 'bg-crimson-50 border-crimson-500 ring-2 ring-crimson-500 shadow-sm'
-                                : 'bg-rose-50/40 border-rose-200/90 hover:border-crimson-400 hover:bg-white hover:shadow-sm'
-                            }`}
-                            title={`Dengarkan pelafalan ${cell.char} (${cell.romaji})`}
-                          >
-                            <span className="font-japanese text-2xl sm:text-3xl font-medium text-slate-900 group-hover:text-crimson-600 transition-colors leading-none">
-                              {cell.char}
-                            </span>
-                            <span className="text-[11px] sm:text-xs font-semibold text-crimson-700 mt-1 font-mono tracking-tight">
-                              {cell.romaji}
-                            </span>
-                          </button>
-                        );
-                      })}
+                          {/* 5 Sel Vokal ke Samping */}
+                          {rowItem.items.map((cell, cIdx) => {
+                            if (!cell) {
+                              return (
+                                <div
+                                  key={cIdx}
+                                  className="h-14 sm:h-16 bg-slate-100/60 rounded-lg border border-dashed border-slate-200 flex items-center justify-center opacity-40 select-none text-slate-400 font-mono text-xs"
+                                >
+                                  -
+                                </div>
+                              );
+                            }
+
+                            const isPlaying = playingId === `main-${cell.char}`;
+                            return (
+                              <button
+                                key={cIdx}
+                                type="button"
+                                onClick={() => handlePlayAudio(`main-${cell.char}`, cell.char)}
+                                className={`h-14 sm:h-16 rounded-lg border transition-all flex flex-col items-center justify-center p-1 group relative ${
+                                  isPlaying
+                                    ? 'bg-crimson-50 border-crimson-500 ring-2 ring-crimson-500 shadow-sm'
+                                    : 'bg-white border-slate-200 hover:border-crimson-400 hover:bg-slate-50 hover:shadow-xs'
+                                }`}
+                                title={`Dengarkan pelafalan ${cell.char} (${cell.romaji})`}
+                              >
+                                <span className="font-japanese text-2xl sm:text-3xl font-medium text-slate-900 group-hover:text-crimson-600 transition-colors leading-none">
+                                  {cell.char}
+                                </span>
+                                <span className="text-[11px] sm:text-xs font-semibold text-slate-500 mt-1 font-mono tracking-tight">
+                                  {cell.romaji}
+                                </span>
+                              </button>
+                            );
+                          })}
+                        </div>
+                      ))}
                     </div>
                   </div>
-                ))}
+                </div>
+
+                {/* Kolom Kanan: Dakuon & Handakuon (5 Baris x 5 Kolom Vokal) */}
+                <div className="xl:col-span-5 space-y-4">
+                  <div className="bg-rose-50/50 rounded-xl p-3 sm:p-4 border border-rose-200/80 space-y-3">
+                    <div className="flex items-center justify-between pb-2 border-b border-rose-200">
+                      <span className="font-bold text-slate-800 text-sm sm:text-base flex items-center gap-2">
+                        <span className="w-2.5 h-2.5 rounded-full bg-rose-600"></span>
+                        Bunyi Bersuara (Dakuon • 濁音)
+                      </span>
+                      <span className="text-[11px] font-semibold text-rose-700">25 Aksara Bersuara</span>
+                    </div>
+
+                    <div className="overflow-x-auto">
+                      <div className="min-w-[340px] space-y-2">
+                        {/* Header Kolom Vokal Dakuon */}
+                        <div className="grid grid-cols-[44px_repeat(5,1fr)] sm:grid-cols-[52px_repeat(5,1fr)] gap-1.5 sm:gap-2 text-center text-xs font-bold text-rose-800 uppercase tracking-wider py-1 bg-rose-200/60 rounded-lg">
+                          <div className="text-[10px] sm:text-xs text-rose-700">Baris</div>
+                          <div>a</div>
+                          <div>i</div>
+                          <div>u</div>
+                          <div>e</div>
+                          <div>o</div>
+                        </div>
+
+                        {/* Baris Dakuon & Handakuon (Ga, Za, Da, Ba, Pa) */}
+                        {(chartLayout[category] || chartLayout.hiragana).dakuonRows.map((rowItem, rIdx) => (
+                          <div
+                            key={rIdx}
+                            className="grid grid-cols-[44px_repeat(5,1fr)] sm:grid-cols-[52px_repeat(5,1fr)] gap-1.5 sm:gap-2 items-center"
+                          >
+                            {/* Label Baris */}
+                            <div className="h-14 sm:h-16 flex items-center justify-center font-bold text-xs sm:text-sm text-rose-800 bg-white rounded-lg border border-rose-200/90 shadow-2xs select-none">
+                              {rowItem.rowName}
+                            </div>
+
+                            {/* 5 Sel Vokal Dakuon */}
+                            {rowItem.items.map((cell, cIdx) => {
+                              const isPlaying = playingId === `dakuon-${cell.char}`;
+                              return (
+                                <button
+                                  key={cIdx}
+                                  type="button"
+                                  onClick={() => handlePlayAudio(`dakuon-${cell.char}`, cell.char)}
+                                  className={`h-14 sm:h-16 rounded-lg border transition-all flex flex-col items-center justify-center p-1 group relative ${
+                                    isPlaying
+                                      ? 'bg-crimson-50 border-crimson-500 ring-2 ring-crimson-500 shadow-sm'
+                                      : 'bg-white border-rose-200/80 hover:border-crimson-400 hover:bg-rose-50/50 hover:shadow-xs'
+                                  }`}
+                                  title={`Dengarkan pelafalan ${cell.char} (${cell.romaji})`}
+                                >
+                                  <span className="font-japanese text-2xl sm:text-3xl font-medium text-slate-900 group-hover:text-crimson-600 transition-colors leading-none">
+                                    {cell.char}
+                                  </span>
+                                  <span className="text-[11px] sm:text-xs font-semibold text-crimson-700 mt-1 font-mono tracking-tight">
+                                    {cell.romaji}
+                                  </span>
+                                </button>
+                              );
+                            })}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Kartu Penjelasan Dakuten & Handakuten */}
+                  <div className="bg-slate-50 rounded-xl p-4 border border-slate-200 text-xs text-slate-600 space-y-2">
+                    <div className="font-bold text-slate-800 flex items-center gap-1.5">
+                      <span>📌</span>
+                      <span>Aturan Tanda Bunyi:</span>
+                    </div>
+                    <ul className="space-y-1 text-slate-600">
+                      <li>
+                        <strong>Dakuten ( ゛ Tenten ):</strong> Mengubah bunyi K &rarr; G, S &rarr; Z, T &rarr; D, H &rarr; B.
+                      </li>
+                      <li>
+                        <strong>Handakuten ( ゜ Maru ):</strong> Mengubah deretan H &rarr; P (pa, pi, pu, pe, po).
+                      </li>
+                    </ul>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
 
           {/* Frame Bagan Poster Bagian Bawah (Tabel Yoon: Kombinasi ya, yu, yo) */}
-          <div className="bg-white rounded-2xl border-2 border-crimson-500/80 p-4 sm:p-6 shadow-sm overflow-x-auto">
-            <div className="min-w-[760px] space-y-6">
+          <div className="bg-white rounded-2xl border-2 border-crimson-500/80 p-4 sm:p-6 shadow-sm">
+            <div className="space-y-6">
               {/* Header Yoon */}
               <div className="border-b-2 border-slate-200 pb-3 flex items-center justify-between">
                 <div className="flex items-center gap-3">
@@ -266,45 +350,136 @@ export default function LearnView({ category, onStartQuiz }) {
                     Bagian 2
                   </span>
                   <span className="font-extrabold text-slate-900 text-lg sm:text-xl">
-                    Kombinasi Aksara Glides (Yōon - 拗音) {category === 'katakana' ? 'Katakana' : 'Hiragana'}
+                    Kombinasi Aksara Glides (Yōon • 拗音) {category === 'katakana' ? 'Katakana' : 'Hiragana'}
                   </span>
                 </div>
-                <div className="text-xs text-slate-500 font-medium">
-                  {category === 'katakana'
-                    ? 'Gabungan huruf baris -i dengan ャ (ya), ュ (yu), ョ (yo) kecil'
-                    : 'Gabungan huruf baris -i dengan ゃ (ya), ゅ (yu), ょ (yo) kecil'}
+                <div className="text-xs text-slate-500 font-medium hidden sm:block">
+                  Disusun ke samping per baris • Gabungan huruf vokal -i dengan ya, yu, yo kecil
                 </div>
               </div>
 
-              {/* Grid 12 Kolom Yoon */}
-              <div className="space-y-2">
-                {(chartLayout[category] || chartLayout.hiragana).yoonTable.rows.map((rowItem, rIdx) => (
-                  <div key={rIdx} className="grid grid-cols-12 gap-1.5 sm:gap-2">
-                    {rowItem.items.map((cell, cIdx) => {
-                      const isPlaying = playingId === `yoon-${cell.char}`;
-                      return (
-                        <button
-                          key={cIdx}
-                          type="button"
-                          onClick={() => handlePlayAudio(`yoon-${cell.char}`, cell.char)}
-                          className={`h-16 sm:h-20 rounded-lg border transition-all flex flex-col items-center justify-center p-1 group relative ${
-                            isPlaying
-                              ? 'bg-crimson-50 border-crimson-500 ring-2 ring-crimson-500 shadow-sm'
-                              : 'bg-white border-slate-200 hover:border-crimson-400 hover:bg-slate-50 hover:shadow-sm'
-                          }`}
-                          title={`Dengarkan pelafalan ${cell.char} (${cell.romaji})`}
-                        >
-                          <span className="font-japanese text-xl sm:text-2xl font-medium text-slate-900 group-hover:text-crimson-600 transition-colors leading-none tracking-tighter">
-                            {cell.char}
-                          </span>
-                          <span className="text-[10px] sm:text-xs font-semibold text-slate-500 mt-1 font-mono">
-                            {cell.romaji}
-                          </span>
-                        </button>
-                      );
-                    })}
+              {/* Grid 2 Kolom Yoon: Yōon Dasar (Kiri) & Yōon Bersuara (Kanan) */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
+                {/* Sub-Tabel 1: Yōon Dasar (7 Baris x 3 Kolom) */}
+                <div className="bg-slate-50/60 rounded-xl p-3 sm:p-4 border border-slate-200/90 space-y-3">
+                  <div className="flex items-center justify-between pb-2 border-b border-slate-200">
+                    <span className="font-bold text-slate-800 text-sm flex items-center gap-2">
+                      <span className="w-2.5 h-2.5 rounded-full bg-amber-500"></span>
+                      Yōon Dasar (Deret K, S, C, N, H, M, R)
+                    </span>
+                    <span className="text-[11px] font-semibold text-slate-500">21 Aksara</span>
                   </div>
-                ))}
+
+                  <div className="overflow-x-auto">
+                    <div className="min-w-[280px] space-y-2">
+                      {/* Header Kolom Glides */}
+                      <div className="grid grid-cols-[48px_repeat(3,1fr)] sm:grid-cols-[56px_repeat(3,1fr)] gap-1.5 sm:gap-2 text-center text-xs font-bold text-slate-600 uppercase tracking-wider py-1 bg-slate-200/70 rounded-lg">
+                        <div className="text-[10px] sm:text-xs text-slate-500">Baris</div>
+                        <div>-ya</div>
+                        <div>-yu</div>
+                        <div>-yo</div>
+                      </div>
+
+                      {/* Baris-Baris Yoon Dasar (Kya sampai Rya) */}
+                      {(chartLayout[category] || chartLayout.hiragana).seionYoonRows.map((rowItem, rIdx) => (
+                        <div
+                          key={rIdx}
+                          className="grid grid-cols-[48px_repeat(3,1fr)] sm:grid-cols-[56px_repeat(3,1fr)] gap-1.5 sm:gap-2 items-center"
+                        >
+                          <div className="h-14 sm:h-16 flex items-center justify-center font-bold text-xs sm:text-sm text-slate-700 bg-white rounded-lg border border-slate-200/90 shadow-2xs select-none">
+                            {rowItem.rowName}
+                          </div>
+                          {rowItem.items.map((cell, cIdx) => {
+                            const isPlaying = playingId === `yoon-${cell.char}`;
+                            return (
+                              <button
+                                key={cIdx}
+                                type="button"
+                                onClick={() => handlePlayAudio(`yoon-${cell.char}`, cell.char)}
+                                className={`h-14 sm:h-16 rounded-lg border transition-all flex flex-col items-center justify-center p-1 group relative ${
+                                  isPlaying
+                                    ? 'bg-crimson-50 border-crimson-500 ring-2 ring-crimson-500 shadow-sm'
+                                    : 'bg-white border-slate-200 hover:border-crimson-400 hover:bg-slate-50 hover:shadow-xs'
+                                }`}
+                                title={`Dengarkan pelafalan ${cell.char} (${cell.romaji})`}
+                              >
+                                <span className="font-japanese text-xl sm:text-2xl font-medium text-slate-900 group-hover:text-crimson-600 transition-colors leading-none tracking-tight">
+                                  {cell.char}
+                                </span>
+                                <span className="text-[10px] sm:text-xs font-semibold text-slate-500 mt-1 font-mono">
+                                  {cell.romaji}
+                                </span>
+                              </button>
+                            );
+                          })}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Sub-Tabel 2: Yōon Bersuara Dakuon & Handakuon (5 Baris x 3 Kolom) */}
+                <div className="bg-amber-50/40 rounded-xl p-3 sm:p-4 border border-amber-200/80 space-y-3">
+                  <div className="flex items-center justify-between pb-2 border-b border-amber-200">
+                    <span className="font-bold text-slate-800 text-sm flex items-center gap-2">
+                      <span className="w-2.5 h-2.5 rounded-full bg-amber-600"></span>
+                      Yōon Bersuara (Deret G, J, B, P)
+                    </span>
+                    <span className="text-[11px] font-semibold text-amber-800">15 Aksara</span>
+                  </div>
+
+                  <div className="overflow-x-auto">
+                    <div className="min-w-[280px] space-y-2">
+                      {/* Header Kolom Glides Bersuara */}
+                      <div className="grid grid-cols-[48px_repeat(3,1fr)] sm:grid-cols-[56px_repeat(3,1fr)] gap-1.5 sm:gap-2 text-center text-xs font-bold text-amber-900 uppercase tracking-wider py-1 bg-amber-200/60 rounded-lg">
+                        <div className="text-[10px] sm:text-xs text-amber-800">Baris</div>
+                        <div>-ya</div>
+                        <div>-yu</div>
+                        <div>-yo</div>
+                      </div>
+
+                      {/* Baris-Baris Yoon Bersuara (Gya sampai Pya) */}
+                      {(chartLayout[category] || chartLayout.hiragana).dakuonYoonRows.map((rowItem, rIdx) => (
+                        <div
+                          key={rIdx}
+                          className="grid grid-cols-[48px_repeat(3,1fr)] sm:grid-cols-[56px_repeat(3,1fr)] gap-1.5 sm:gap-2 items-center"
+                        >
+                          <div className="h-14 sm:h-16 flex items-center justify-center font-bold text-xs sm:text-sm text-amber-900 bg-white rounded-lg border border-amber-200/90 shadow-2xs select-none">
+                            {rowItem.rowName}
+                          </div>
+                          {rowItem.items.map((cell, cIdx) => {
+                            const isPlaying = playingId === `yoon-${cell.char}`;
+                            return (
+                              <button
+                                key={cIdx}
+                                type="button"
+                                onClick={() => handlePlayAudio(`yoon-${cell.char}`, cell.char)}
+                                className={`h-14 sm:h-16 rounded-lg border transition-all flex flex-col items-center justify-center p-1 group relative ${
+                                  isPlaying
+                                    ? 'bg-crimson-50 border-crimson-500 ring-2 ring-crimson-500 shadow-sm'
+                                    : 'bg-white border-amber-200 hover:border-crimson-400 hover:bg-amber-50/50 hover:shadow-xs'
+                                }`}
+                                title={`Dengarkan pelafalan ${cell.char} (${cell.romaji})`}
+                              >
+                                <span className="font-japanese text-xl sm:text-2xl font-medium text-slate-900 group-hover:text-crimson-600 transition-colors leading-none tracking-tight">
+                                  {cell.char}
+                                </span>
+                                <span className="text-[10px] sm:text-xs font-semibold text-amber-800 mt-1 font-mono">
+                                  {cell.romaji}
+                                </span>
+                              </button>
+                            );
+                          })}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Petunjuk Tambahan Yoon */}
+                  <div className="bg-white/80 rounded-lg p-3 border border-amber-200/80 text-[11px] text-amber-900">
+                    💡 <strong>Tips Pelafalan:</strong> Huruf kombinasi Yōon diucapkan menyatu sebagai satu ketukan (mora), misalnya <em>kya</em> diucapkan langsung &quot;kya&quot;, bukan &quot;ki-ya&quot;.
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -318,33 +493,37 @@ export default function LearnView({ category, onStartQuiz }) {
           <div className="bg-white rounded-xl p-4 sm:p-5 border border-slate-200/90 shadow-sm space-y-4">
             {/* Filter Sub-Grup Tab (Hiragana/Katakana) */}
             {category !== 'kanji' && (
-              <div className="flex flex-wrap items-center gap-2 border-b border-slate-100 pb-3">
-                <span className="text-xs font-bold text-slate-400 uppercase tracking-wider mr-2">
+              <div className="flex flex-col sm:flex-row sm:items-center gap-2.5 border-b border-slate-100 pb-3.5">
+                <span className="text-xs font-bold text-slate-400 uppercase tracking-wider shrink-0">
                   Kategori:
                 </span>
-                {[
-                  { key: 'all', label: 'Semua (107)' },
-                  { key: 'seion', label: 'Dasar / Seion (46)' },
-                  { key: 'dakuon', label: 'Dakuon ゛(20)' },
-                  { key: 'handakuon', label: 'Handakuon ゜(5)' },
-                  { key: 'yoon', label: 'Kombinasi / Yōon (36)' },
-                ].map((g) => (
-                  <button
-                    key={g.key}
-                    type="button"
-                    onClick={() => {
-                      setGroupFilter(g.key);
-                      setActiveRow('Semua');
-                    }}
-                    className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
-                      groupFilter === g.key
-                        ? 'bg-crimson-600 text-white shadow-sm'
-                        : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
-                    }`}
-                  >
-                    {g.label}
-                  </button>
-                ))}
+                <div className="grid grid-cols-2 sm:flex sm:flex-wrap gap-2 w-full sm:w-auto">
+                  {[
+                    { key: 'all', label: 'Semua (107)' },
+                    { key: 'seion', label: 'Dasar / Seion (46)' },
+                    { key: 'dakuon', label: 'Dakuon ゛(20)' },
+                    { key: 'handakuon', label: 'Handakuon ゜(5)' },
+                    { key: 'yoon', label: 'Kombinasi / Yōon (36)', fullOnMobile: true },
+                  ].map((g) => (
+                    <button
+                      key={g.key}
+                      type="button"
+                      onClick={() => {
+                        setGroupFilter(g.key);
+                        setActiveRow('Semua');
+                      }}
+                      className={`w-full sm:w-auto px-3 py-2 sm:py-1.5 rounded-lg text-xs font-bold transition-all text-center flex items-center justify-center ${
+                        g.fullOnMobile ? 'col-span-2 sm:col-span-1' : ''
+                      } ${
+                        groupFilter === g.key
+                          ? 'bg-crimson-600 text-white shadow-sm'
+                          : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                      }`}
+                    >
+                      {g.label}
+                    </button>
+                  ))}
+                </div>
               </div>
             )}
 
@@ -470,8 +649,8 @@ export default function LearnView({ category, onStartQuiz }) {
                       )}
                     </div>
 
-                    {/* Tombol Tata Cara Penulisan Khusus Hiragana */}
-                    {category === 'hiragana' && (
+                    {/* Tombol Tata Cara Penulisan untuk Hiragana & Katakana */}
+                    {(category === 'hiragana' || category === 'katakana') && (
                       <button
                         type="button"
                         onClick={(e) => {
@@ -519,6 +698,7 @@ export default function LearnView({ category, onStartQuiz }) {
       {selectedStrokeChar && (
         <StrokeModal
           characterItem={selectedStrokeChar}
+          scriptType={category}
           onClose={() => setSelectedStrokeChar(null)}
         />
       )}

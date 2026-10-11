@@ -506,351 +506,543 @@ export const kanjiList = [
   },
 ];
 
-// ======================== STRUKTUR TABEL LENGKAP (PERSIS GAMBAR) ========================
+// ======================== STRUKTUR TABEL LENGKAP (HORIZONTAL / KE SAMPING) ========================
 export const chartLayout = {
   hiragana: {
-    mainTable: {
-      rows: [
-        {
-          vowel: 'a',
-          seion: [
-            { char: 'あ', romaji: 'a' },
-            { char: 'か', romaji: 'ka' },
-            { char: 'さ', romaji: 'sa' },
-            { char: 'た', romaji: 'ta' },
-            { char: 'な', romaji: 'na' },
-            { char: 'は', romaji: 'ha' },
-            { char: 'ま', romaji: 'ma' },
-            { char: 'や', romaji: 'ya' },
-            { char: 'ら', romaji: 'ra' },
-            { char: 'わ', romaji: 'wa' },
-          ],
-          dakuon: [
-            { char: 'が', romaji: 'ga' },
-            { char: 'ざ', romaji: 'za' },
-            { char: 'だ', romaji: 'da' },
-            { char: 'ば', romaji: 'ba' },
-            { char: 'ぱ', romaji: 'pa' },
-          ],
-        },
-        {
-          vowel: 'i',
-          seion: [
-            { char: 'い', romaji: 'i' },
-            { char: 'き', romaji: 'ki' },
-            { char: 'し', romaji: 'shi' },
-            { char: 'ち', romaji: 'chi' },
-            { char: 'に', romaji: 'ni' },
-            { char: 'ひ', romaji: 'hi' },
-            { char: 'み', romaji: 'mi' },
-            null,
-            { char: 'り', romaji: 'ri' },
-            null,
-          ],
-          dakuon: [
-            { char: 'ぎ', romaji: 'gi' },
-            { char: 'じ', romaji: 'ji' },
-            { char: 'ぢ', romaji: 'ji' },
-            { char: 'び', romaji: 'bi' },
-            { char: 'ぴ', romaji: 'pi' },
-          ],
-        },
-        {
-          vowel: 'u',
-          seion: [
-            { char: 'う', romaji: 'u' },
-            { char: 'く', romaji: 'ku' },
-            { char: 'す', romaji: 'su' },
-            { char: 'つ', romaji: 'tsu' },
-            { char: 'ぬ', romaji: 'nu' },
-            { char: 'ふ', romaji: 'fu' },
-            { char: 'む', romaji: 'mu' },
-            { char: 'ゆ', romaji: 'yu' },
-            { char: 'る', romaji: 'ru' },
-            null,
-          ],
-          dakuon: [
-            { char: 'ぐ', romaji: 'gu' },
-            { char: 'ず', romaji: 'zu' },
-            { char: 'づ', romaji: 'zu' },
-            { char: 'ぶ', romaji: 'bu' },
-            { char: 'ぷ', romaji: 'pu' },
-          ],
-        },
-        {
-          vowel: 'e',
-          seion: [
-            { char: 'え', romaji: 'e' },
-            { char: 'け', romaji: 'ke' },
-            { char: 'せ', romaji: 'se' },
-            { char: 'て', romaji: 'te' },
-            { char: 'ね', romaji: 'ne' },
-            { char: 'へ', romaji: 'he' },
-            { char: 'め', romaji: 'me' },
-            null,
-            { char: 'れ', romaji: 're' },
-            null,
-          ],
-          dakuon: [
-            { char: 'げ', romaji: 'ge' },
-            { char: 'ぜ', romaji: 'ze' },
-            { char: 'で', romaji: 'de' },
-            { char: 'べ', romaji: 'be' },
-            { char: 'ぺ', romaji: 'pe' },
-          ],
-        },
-        {
-          vowel: 'o',
-          seion: [
-            { char: 'お', romaji: 'o' },
-            { char: 'こ', romaji: 'ko' },
-            { char: 'そ', romaji: 'so' },
-            { char: 'と', romaji: 'to' },
-            { char: 'の', romaji: 'no' },
-            { char: 'ほ', romaji: 'ho' },
-            { char: 'も', romaji: 'mo' },
-            { char: 'よ', romaji: 'yo' },
-            { char: 'ろ', romaji: 'ro' },
-            { char: 'を', romaji: 'o' },
-            { char: 'ん', romaji: 'n' },
-          ],
-          dakuon: [
-            { char: 'ご', romaji: 'go' },
-            { char: 'ぞ', romaji: 'zo' },
-            { char: 'ど', romaji: 'do' },
-            { char: 'ぼ', romaji: 'bo' },
-            { char: 'ぽ', romaji: 'po' },
-          ],
-        },
-      ],
-    },
-    yoonTable: {
-      rows: [
-        {
-          glide: 'ya',
-          items: [
-            { char: 'きゃ', romaji: 'kya' },
-            { char: 'しゃ', romaji: 'sha' },
-            { char: 'ちゃ', romaji: 'cha' },
-            { char: 'にゃ', romaji: 'nya' },
-            { char: 'ひゃ', romaji: 'hya' },
-            { char: 'みゃ', romaji: 'mya' },
-            { char: 'りゃ', romaji: 'rya' },
-            { char: 'ぎゃ', romaji: 'gya' },
-            { char: 'じゃ', romaji: 'ja' },
-            { char: 'ぢゃ', romaji: 'ja' },
-            { char: 'びゃ', romaji: 'bya' },
-            { char: 'ぴゃ', romaji: 'pya' },
-          ],
-        },
-        {
-          glide: 'yu',
-          items: [
-            { char: 'きゅ', romaji: 'kyu' },
-            { char: 'しゅ', romaji: 'shu' },
-            { char: 'ちゅ', romaji: 'chu' },
-            { char: 'にゅ', romaji: 'nyu' },
-            { char: 'ひゅ', romaji: 'hyu' },
-            { char: 'みゅ', romaji: 'myu' },
-            { char: 'りゅ', romaji: 'ryu' },
-            { char: 'ぎゅ', romaji: 'gyu' },
-            { char: 'じゅ', romaji: 'ju' },
-            { char: 'ぢゅ', romaji: 'ju' },
-            { char: 'びゅ', romaji: 'byu' },
-            { char: 'ぴゅ', romaji: 'pyu' },
-          ],
-        },
-        {
-          glide: 'yo',
-          items: [
-            { char: 'きょ', romaji: 'kyo' },
-            { char: 'しょ', romaji: 'sho' },
-            { char: 'ちょ', romaji: 'cho' },
-            { char: 'にょ', romaji: 'nyo' },
-            { char: 'ひょ', romaji: 'hyo' },
-            { char: 'みょ', romaji: 'myo' },
-            { char: 'りょ', romaji: 'ryo' },
-            { char: 'ぎょ', romaji: 'gyo' },
-            { char: 'じょ', romaji: 'jo' },
-            { char: 'ぢょ', romaji: 'jo' },
-            { char: 'びょ', romaji: 'byo' },
-            { char: 'ぴょ', romaji: 'pyo' },
-          ],
-        },
-      ],
-    },
+    vowels: ['a', 'i', 'u', 'e', 'o'],
+    seionRows: [
+      {
+        rowName: 'A',
+        items: [
+          { char: 'あ', romaji: 'a' },
+          { char: 'い', romaji: 'i' },
+          { char: 'う', romaji: 'u' },
+          { char: 'え', romaji: 'e' },
+          { char: 'お', romaji: 'o' },
+        ],
+      },
+      {
+        rowName: 'Ka',
+        items: [
+          { char: 'か', romaji: 'ka' },
+          { char: 'き', romaji: 'ki' },
+          { char: 'く', romaji: 'ku' },
+          { char: 'け', romaji: 'ke' },
+          { char: 'こ', romaji: 'ko' },
+        ],
+      },
+      {
+        rowName: 'Sa',
+        items: [
+          { char: 'さ', romaji: 'sa' },
+          { char: 'し', romaji: 'shi' },
+          { char: 'す', romaji: 'su' },
+          { char: 'せ', romaji: 'se' },
+          { char: 'そ', romaji: 'so' },
+        ],
+      },
+      {
+        rowName: 'Ta',
+        items: [
+          { char: 'た', romaji: 'ta' },
+          { char: 'ち', romaji: 'chi' },
+          { char: 'つ', romaji: 'tsu' },
+          { char: 'て', romaji: 'te' },
+          { char: 'と', romaji: 'to' },
+        ],
+      },
+      {
+        rowName: 'Na',
+        items: [
+          { char: 'な', romaji: 'na' },
+          { char: 'に', romaji: 'ni' },
+          { char: 'ぬ', romaji: 'nu' },
+          { char: 'ね', romaji: 'ne' },
+          { char: 'の', romaji: 'no' },
+        ],
+      },
+      {
+        rowName: 'Ha',
+        items: [
+          { char: 'は', romaji: 'ha' },
+          { char: 'ひ', romaji: 'hi' },
+          { char: 'ふ', romaji: 'fu' },
+          { char: 'へ', romaji: 'he' },
+          { char: 'ほ', romaji: 'ho' },
+        ],
+      },
+      {
+        rowName: 'Ma',
+        items: [
+          { char: 'ま', romaji: 'ma' },
+          { char: 'み', romaji: 'mi' },
+          { char: 'む', romaji: 'mu' },
+          { char: 'め', romaji: 'me' },
+          { char: 'も', romaji: 'mo' },
+        ],
+      },
+      {
+        rowName: 'Ya',
+        items: [
+          { char: 'や', romaji: 'ya' },
+          null,
+          { char: 'ゆ', romaji: 'yu' },
+          null,
+          { char: 'よ', romaji: 'yo' },
+        ],
+      },
+      {
+        rowName: 'Ra',
+        items: [
+          { char: 'ら', romaji: 'ra' },
+          { char: 'り', romaji: 'ri' },
+          { char: 'る', romaji: 'ru' },
+          { char: 'れ', romaji: 're' },
+          { char: 'ろ', romaji: 'ro' },
+        ],
+      },
+      {
+        rowName: 'Wa',
+        items: [
+          { char: 'わ', romaji: 'wa' },
+          null,
+          null,
+          null,
+          { char: 'を', romaji: 'wo' },
+        ],
+      },
+      {
+        rowName: 'N',
+        items: [
+          { char: 'ん', romaji: 'n' },
+          null,
+          null,
+          null,
+          null,
+        ],
+      },
+    ],
+    dakuonRows: [
+      {
+        rowName: 'Ga',
+        items: [
+          { char: 'が', romaji: 'ga' },
+          { char: 'ぎ', romaji: 'gi' },
+          { char: 'ぐ', romaji: 'gu' },
+          { char: 'げ', romaji: 'ge' },
+          { char: 'ご', romaji: 'go' },
+        ],
+      },
+      {
+        rowName: 'Za',
+        items: [
+          { char: 'ざ', romaji: 'za' },
+          { char: 'じ', romaji: 'ji' },
+          { char: 'ず', romaji: 'zu' },
+          { char: 'ぜ', romaji: 'ze' },
+          { char: 'ぞ', romaji: 'zo' },
+        ],
+      },
+      {
+        rowName: 'Da',
+        items: [
+          { char: 'だ', romaji: 'da' },
+          { char: 'ぢ', romaji: 'ji' },
+          { char: 'づ', romaji: 'zu' },
+          { char: 'で', romaji: 'de' },
+          { char: 'ど', romaji: 'do' },
+        ],
+      },
+      {
+        rowName: 'Ba',
+        items: [
+          { char: 'ば', romaji: 'ba' },
+          { char: 'び', romaji: 'bi' },
+          { char: 'ぶ', romaji: 'bu' },
+          { char: 'べ', romaji: 'be' },
+          { char: 'ぼ', romaji: 'bo' },
+        ],
+      },
+      {
+        rowName: 'Pa',
+        items: [
+          { char: 'ぱ', romaji: 'pa' },
+          { char: 'ぴ', romaji: 'pi' },
+          { char: 'ぷ', romaji: 'pu' },
+          { char: 'ぺ', romaji: 'pe' },
+          { char: 'ぽ', romaji: 'po' },
+        ],
+      },
+    ],
+    yoonGlides: ['-ya', '-yu', '-yo'],
+    seionYoonRows: [
+      {
+        rowName: 'Kya',
+        items: [
+          { char: 'きゃ', romaji: 'kya' },
+          { char: 'きゅ', romaji: 'kyu' },
+          { char: 'きょ', romaji: 'kyo' },
+        ],
+      },
+      {
+        rowName: 'Sha',
+        items: [
+          { char: 'しゃ', romaji: 'sha' },
+          { char: 'しゅ', romaji: 'shu' },
+          { char: 'しょ', romaji: 'sho' },
+        ],
+      },
+      {
+        rowName: 'Cha',
+        items: [
+          { char: 'ちゃ', romaji: 'cha' },
+          { char: 'ちゅ', romaji: 'chu' },
+          { char: 'ちょ', romaji: 'cho' },
+        ],
+      },
+      {
+        rowName: 'Nya',
+        items: [
+          { char: 'にゃ', romaji: 'nya' },
+          { char: 'にゅ', romaji: 'nyu' },
+          { char: 'にょ', romaji: 'nyo' },
+        ],
+      },
+      {
+        rowName: 'Hya',
+        items: [
+          { char: 'ひゃ', romaji: 'hya' },
+          { char: 'ひゅ', romaji: 'hyu' },
+          { char: 'ひょ', romaji: 'hyo' },
+        ],
+      },
+      {
+        rowName: 'Mya',
+        items: [
+          { char: 'みゃ', romaji: 'mya' },
+          { char: 'みゅ', romaji: 'myu' },
+          { char: 'みょ', romaji: 'myo' },
+        ],
+      },
+      {
+        rowName: 'Rya',
+        items: [
+          { char: 'りゃ', romaji: 'rya' },
+          { char: 'りゅ', romaji: 'ryu' },
+          { char: 'りょ', romaji: 'ryo' },
+        ],
+      },
+    ],
+    dakuonYoonRows: [
+      {
+        rowName: 'Gya',
+        items: [
+          { char: 'ぎゃ', romaji: 'gya' },
+          { char: 'ぎゅ', romaji: 'gyu' },
+          { char: 'ぎょ', romaji: 'gyo' },
+        ],
+      },
+      {
+        rowName: 'Ja',
+        items: [
+          { char: 'じゃ', romaji: 'ja' },
+          { char: 'じゅ', romaji: 'ju' },
+          { char: 'じょ', romaji: 'jo' },
+        ],
+      },
+      {
+        rowName: 'Ja (ぢ)',
+        items: [
+          { char: 'ぢゃ', romaji: 'ja' },
+          { char: 'ぢゅ', romaji: 'ju' },
+          { char: 'ぢょ', romaji: 'jo' },
+        ],
+      },
+      {
+        rowName: 'Bya',
+        items: [
+          { char: 'びゃ', romaji: 'bya' },
+          { char: 'びゅ', romaji: 'byu' },
+          { char: 'びょ', romaji: 'byo' },
+        ],
+      },
+      {
+        rowName: 'Pya',
+        items: [
+          { char: 'ぴゃ', romaji: 'pya' },
+          { char: 'ぴゅ', romaji: 'pyu' },
+          { char: 'ぴょ', romaji: 'pyo' },
+        ],
+      },
+    ],
   },
   katakana: {
-    mainTable: {
-      rows: [
-        {
-          vowel: 'a',
-          seion: [
-            { char: 'ア', romaji: 'a' },
-            { char: 'カ', romaji: 'ka' },
-            { char: 'サ', romaji: 'sa' },
-            { char: 'タ', romaji: 'ta' },
-            { char: 'ナ', romaji: 'na' },
-            { char: 'ハ', romaji: 'ha' },
-            { char: 'マ', romaji: 'ma' },
-            { char: 'ヤ', romaji: 'ya' },
-            { char: 'ラ', romaji: 'ra' },
-            { char: 'ワ', romaji: 'wa' },
-          ],
-          dakuon: [
-            { char: 'ガ', romaji: 'ga' },
-            { char: 'ザ', romaji: 'za' },
-            { char: 'ダ', romaji: 'da' },
-            { char: 'バ', romaji: 'ba' },
-            { char: 'パ', romaji: 'pa' },
-          ],
-        },
-        {
-          vowel: 'i',
-          seion: [
-            { char: 'イ', romaji: 'i' },
-            { char: 'キ', romaji: 'ki' },
-            { char: 'シ', romaji: 'shi' },
-            { char: 'チ', romaji: 'chi' },
-            { char: 'ニ', romaji: 'ni' },
-            { char: 'ヒ', romaji: 'hi' },
-            { char: 'ミ', romaji: 'mi' },
-            null,
-            { char: 'リ', romaji: 'ri' },
-            null,
-          ],
-          dakuon: [
-            { char: 'ギ', romaji: 'gi' },
-            { char: 'ジ', romaji: 'ji' },
-            { char: 'ヂ', romaji: 'ji' },
-            { char: 'ビ', romaji: 'bi' },
-            { char: 'ピ', romaji: 'pi' },
-          ],
-        },
-        {
-          vowel: 'u',
-          seion: [
-            { char: 'ウ', romaji: 'u' },
-            { char: 'ク', romaji: 'ku' },
-            { char: 'ス', romaji: 'su' },
-            { char: 'ツ', romaji: 'tsu' },
-            { char: 'ヌ', romaji: 'nu' },
-            { char: 'フ', romaji: 'fu' },
-            { char: 'ム', romaji: 'mu' },
-            { char: 'ユ', romaji: 'yu' },
-            { char: 'ル', romaji: 'ru' },
-            null,
-          ],
-          dakuon: [
-            { char: 'グ', romaji: 'gu' },
-            { char: 'ズ', romaji: 'zu' },
-            { char: 'ヅ', romaji: 'zu' },
-            { char: 'ブ', romaji: 'bu' },
-            { char: 'プ', romaji: 'pu' },
-          ],
-        },
-        {
-          vowel: 'e',
-          seion: [
-            { char: 'エ', romaji: 'e' },
-            { char: 'ケ', romaji: 'ke' },
-            { char: 'セ', romaji: 'se' },
-            { char: 'テ', romaji: 'te' },
-            { char: 'ネ', romaji: 'ne' },
-            { char: 'ヘ', romaji: 'he' },
-            { char: 'メ', romaji: 'me' },
-            null,
-            { char: 'レ', romaji: 're' },
-            null,
-          ],
-          dakuon: [
-            { char: 'ゲ', romaji: 'ge' },
-            { char: 'ゼ', romaji: 'ze' },
-            { char: 'デ', romaji: 'de' },
-            { char: 'ベ', romaji: 'be' },
-            { char: 'ペ', romaji: 'pe' },
-          ],
-        },
-        {
-          vowel: 'o',
-          seion: [
-            { char: 'オ', romaji: 'o' },
-            { char: 'コ', romaji: 'ko' },
-            { char: 'ソ', romaji: 'so' },
-            { char: 'ト', romaji: 'to' },
-            { char: 'ノ', romaji: 'no' },
-            { char: 'ホ', romaji: 'ho' },
-            { char: 'モ', romaji: 'mo' },
-            { char: 'ヨ', romaji: 'yo' },
-            { char: 'ロ', romaji: 'ro' },
-            { char: 'ヲ', romaji: 'o' },
-            { char: 'ン', romaji: 'n' },
-          ],
-          dakuon: [
-            { char: 'ゴ', romaji: 'go' },
-            { char: 'ゾ', romaji: 'zo' },
-            { char: 'ド', romaji: 'do' },
-            { char: 'ボ', romaji: 'bo' },
-            { char: 'ポ', romaji: 'po' },
-          ],
-        },
-      ],
-    },
-    yoonTable: {
-      rows: [
-        {
-          glide: 'ya',
-          items: [
-            { char: 'キャ', romaji: 'kya' },
-            { char: 'シャ', romaji: 'sha' },
-            { char: 'チャ', romaji: 'cha' },
-            { char: 'ニャ', romaji: 'nya' },
-            { char: 'ヒャ', romaji: 'hya' },
-            { char: 'ミャ', romaji: 'mya' },
-            { char: 'リャ', romaji: 'rya' },
-            { char: 'ギャ', romaji: 'gya' },
-            { char: 'ジャ', romaji: 'ja' },
-            { char: 'ヂャ', romaji: 'ja' },
-            { char: 'ビャ', romaji: 'bya' },
-            { char: 'ピャ', romaji: 'pya' },
-          ],
-        },
-        {
-          glide: 'yu',
-          items: [
-            { char: 'キュ', romaji: 'kyu' },
-            { char: 'シュ', romaji: 'shu' },
-            { char: 'チュ', romaji: 'chu' },
-            { char: 'ニュ', romaji: 'nyu' },
-            { char: 'ヒュ', romaji: 'hyu' },
-            { char: 'ミュ', romaji: 'myu' },
-            { char: 'リュ', romaji: 'ryu' },
-            { char: 'ギュ', romaji: 'gyu' },
-            { char: 'ジュ', romaji: 'ju' },
-            { char: 'ヂュ', romaji: 'ju' },
-            { char: 'ビュ', romaji: 'byu' },
-            { char: 'ピュ', romaji: 'pyu' },
-          ],
-        },
-        {
-          glide: 'yo',
-          items: [
-            { char: 'キョ', romaji: 'kyo' },
-            { char: 'ショ', romaji: 'sho' },
-            { char: 'チョ', romaji: 'cho' },
-            { char: 'ニョ', romaji: 'nyo' },
-            { char: 'ヒョ', romaji: 'hyo' },
-            { char: 'ミョ', romaji: 'myo' },
-            { char: 'リョ', romaji: 'ryo' },
-            { char: 'ギョ', romaji: 'gyo' },
-            { char: 'ジョ', romaji: 'jo' },
-            { char: 'ヂョ', romaji: 'jo' },
-            { char: 'ビョ', romaji: 'byo' },
-            { char: 'ピョ', romaji: 'pyo' },
-          ],
-        },
-      ],
-    },
+    vowels: ['a', 'i', 'u', 'e', 'o'],
+    seionRows: [
+      {
+        rowName: 'A',
+        items: [
+          { char: 'ア', romaji: 'a' },
+          { char: 'イ', romaji: 'i' },
+          { char: 'ウ', romaji: 'u' },
+          { char: 'エ', romaji: 'e' },
+          { char: 'オ', romaji: 'o' },
+        ],
+      },
+      {
+        rowName: 'Ka',
+        items: [
+          { char: 'カ', romaji: 'ka' },
+          { char: 'キ', romaji: 'ki' },
+          { char: 'ク', romaji: 'ku' },
+          { char: 'ケ', romaji: 'ke' },
+          { char: 'コ', romaji: 'ko' },
+        ],
+      },
+      {
+        rowName: 'Sa',
+        items: [
+          { char: 'サ', romaji: 'sa' },
+          { char: 'シ', romaji: 'shi' },
+          { char: 'ス', romaji: 'su' },
+          { char: 'セ', romaji: 'se' },
+          { char: 'ソ', romaji: 'so' },
+        ],
+      },
+      {
+        rowName: 'Ta',
+        items: [
+          { char: 'タ', romaji: 'ta' },
+          { char: 'チ', romaji: 'chi' },
+          { char: 'ツ', romaji: 'tsu' },
+          { char: 'テ', romaji: 'te' },
+          { char: 'ト', romaji: 'to' },
+        ],
+      },
+      {
+        rowName: 'Na',
+        items: [
+          { char: 'ナ', romaji: 'na' },
+          { char: 'ニ', romaji: 'ni' },
+          { char: 'ヌ', romaji: 'nu' },
+          { char: 'ネ', romaji: 'ne' },
+          { char: 'ノ', romaji: 'no' },
+        ],
+      },
+      {
+        rowName: 'Ha',
+        items: [
+          { char: 'ハ', romaji: 'ha' },
+          { char: 'ヒ', romaji: 'hi' },
+          { char: 'フ', romaji: 'fu' },
+          { char: 'ヘ', romaji: 'he' },
+          { char: 'ホ', romaji: 'ho' },
+        ],
+      },
+      {
+        rowName: 'Ma',
+        items: [
+          { char: 'マ', romaji: 'ma' },
+          { char: 'ミ', romaji: 'mi' },
+          { char: 'ム', romaji: 'mu' },
+          { char: 'メ', romaji: 'me' },
+          { char: 'モ', romaji: 'mo' },
+        ],
+      },
+      {
+        rowName: 'Ya',
+        items: [
+          { char: 'ヤ', romaji: 'ya' },
+          null,
+          { char: 'ユ', romaji: 'yu' },
+          null,
+          { char: 'ヨ', romaji: 'yo' },
+        ],
+      },
+      {
+        rowName: 'Ra',
+        items: [
+          { char: 'ラ', romaji: 'ra' },
+          { char: 'リ', romaji: 'ri' },
+          { char: 'ル', romaji: 'ru' },
+          { char: 'レ', romaji: 're' },
+          { char: 'ロ', romaji: 'ro' },
+        ],
+      },
+      {
+        rowName: 'Wa',
+        items: [
+          { char: 'ワ', romaji: 'wa' },
+          null,
+          null,
+          null,
+          { char: 'ヲ', romaji: 'wo' },
+        ],
+      },
+      {
+        rowName: 'N',
+        items: [
+          { char: 'ン', romaji: 'n' },
+          null,
+          null,
+          null,
+          null,
+        ],
+      },
+    ],
+    dakuonRows: [
+      {
+        rowName: 'Ga',
+        items: [
+          { char: 'ガ', romaji: 'ga' },
+          { char: 'ギ', romaji: 'gi' },
+          { char: 'グ', romaji: 'gu' },
+          { char: 'ゲ', romaji: 'ge' },
+          { char: 'ゴ', romaji: 'go' },
+        ],
+      },
+      {
+        rowName: 'Za',
+        items: [
+          { char: 'ザ', romaji: 'za' },
+          { char: 'ジ', romaji: 'ji' },
+          { char: 'ズ', romaji: 'zu' },
+          { char: 'ゼ', romaji: 'ze' },
+          { char: 'ゾ', romaji: 'zo' },
+        ],
+      },
+      {
+        rowName: 'Da',
+        items: [
+          { char: 'ダ', romaji: 'da' },
+          { char: 'ヂ', romaji: 'ji' },
+          { char: 'ヅ', romaji: 'zu' },
+          { char: 'デ', romaji: 'de' },
+          { char: 'ド', romaji: 'do' },
+        ],
+      },
+      {
+        rowName: 'Ba',
+        items: [
+          { char: 'バ', romaji: 'ba' },
+          { char: 'ビ', romaji: 'bi' },
+          { char: 'ブ', romaji: 'bu' },
+          { char: 'ベ', romaji: 'be' },
+          { char: 'ボ', romaji: 'bo' },
+        ],
+      },
+      {
+        rowName: 'Pa',
+        items: [
+          { char: 'パ', romaji: 'pa' },
+          { char: 'ピ', romaji: 'pi' },
+          { char: 'プ', romaji: 'pu' },
+          { char: 'ペ', romaji: 'pe' },
+          { char: 'ポ', romaji: 'po' },
+        ],
+      },
+    ],
+    yoonGlides: ['-ya', '-yu', '-yo'],
+    seionYoonRows: [
+      {
+        rowName: 'Kya',
+        items: [
+          { char: 'キャ', romaji: 'kya' },
+          { char: 'キュ', romaji: 'kyu' },
+          { char: 'キョ', romaji: 'kyo' },
+        ],
+      },
+      {
+        rowName: 'Sha',
+        items: [
+          { char: 'シャ', romaji: 'sha' },
+          { char: 'シュ', romaji: 'shu' },
+          { char: 'ショ', romaji: 'sho' },
+        ],
+      },
+      {
+        rowName: 'Cha',
+        items: [
+          { char: 'チャ', romaji: 'cha' },
+          { char: 'チュ', romaji: 'chu' },
+          { char: 'チョ', romaji: 'cho' },
+        ],
+      },
+      {
+        rowName: 'Nya',
+        items: [
+          { char: 'ニャ', romaji: 'nya' },
+          { char: 'ニュ', romaji: 'nyu' },
+          { char: 'ニョ', romaji: 'nyo' },
+        ],
+      },
+      {
+        rowName: 'Hya',
+        items: [
+          { char: 'ヒャ', romaji: 'hya' },
+          { char: 'ヒュ', romaji: 'hyu' },
+          { char: 'ヒョ', romaji: 'hyo' },
+        ],
+      },
+      {
+        rowName: 'Mya',
+        items: [
+          { char: 'ミャ', romaji: 'mya' },
+          { char: 'ミュ', romaji: 'myu' },
+          { char: 'ミョ', romaji: 'myo' },
+        ],
+      },
+      {
+        rowName: 'Rya',
+        items: [
+          { char: 'リャ', romaji: 'rya' },
+          { char: 'リュ', romaji: 'ryu' },
+          { char: 'リョ', romaji: 'ryo' },
+        ],
+      },
+    ],
+    dakuonYoonRows: [
+      {
+        rowName: 'Gya',
+        items: [
+          { char: 'ギャ', romaji: 'gya' },
+          { char: 'ギュ', romaji: 'gyu' },
+          { char: 'ギョ', romaji: 'gyo' },
+        ],
+      },
+      {
+        rowName: 'Ja',
+        items: [
+          { char: 'ジャ', romaji: 'ja' },
+          { char: 'ジュ', romaji: 'ju' },
+          { char: 'ジョ', romaji: 'jo' },
+        ],
+      },
+      {
+        rowName: 'Ja (ヂ)',
+        items: [
+          { char: 'ヂャ', romaji: 'ja' },
+          { char: 'ヂュ', romaji: 'ju' },
+          { char: 'ヂョ', romaji: 'jo' },
+        ],
+      },
+      {
+        rowName: 'Bya',
+        items: [
+          { char: 'ビャ', romaji: 'bya' },
+          { char: 'ビュ', romaji: 'byu' },
+          { char: 'ビョ', romaji: 'byo' },
+        ],
+      },
+      {
+        rowName: 'Pya',
+        items: [
+          { char: 'ピャ', romaji: 'pya' },
+          { char: 'ピュ', romaji: 'pyu' },
+          { char: 'ピョ', romaji: 'pyo' },
+        ],
+      },
+    ],
   },
 };
 

@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { ChevronDown, Menu, X, BookOpen, HelpCircle } from 'lucide-react';
+import { ChevronDown, Menu, X, BookOpen, HelpCircle } from './Icons';
 
 /**
  * Komponen Navbar dengan dropdown navigasi modular dan dukungan responsif mobile

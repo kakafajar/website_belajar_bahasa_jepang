@@ -82,3 +82,139 @@ a:focus-visible {
   transform-origin: center;
   animation: pulseStartPin 1.4s ease-in-out infinite;
 }
+
+/* =========================================================
+   QUIZ SMOOTH ANIMATIONS & MICRO-INTERACTIONS
+   ========================================================= */
+
+/* Transisi halus saat pergantian kartu soal */
+@keyframes quizCardEnter {
+  0% {
+    opacity: 0;
+    transform: translateY(8px) scale(0.995);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.animate-quiz-card-enter {
+  animation: quizCardEnter 0.32s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Animasi pop halus saat jawaban benar */
+@keyframes optionCorrectPop {
+  0% {
+    transform: scale(1);
+  }
+  40% {
+    transform: scale(1.025);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.animate-option-correct {
+  animation: optionCorrectPop 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+/* Animasi getar halus saat jawaban salah (gentle shake) */
+@keyframes optionWrongShake {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  20% {
+    transform: translateX(-5px);
+  }
+  40% {
+    transform: translateX(5px);
+  }
+  60% {
+    transform: translateX(-3px);
+  }
+  80% {
+    transform: translateX(3px);
+  }
+}
+
+.animate-option-wrong {
+  animation: optionWrongShake 0.4s cubic-bezier(0.36, 0.07, 0.19, 0.97) forwards;
+}
+
+/* Animasi slide & fade kotak feedback pembahasan */
+@keyframes feedbackSlideIn {
+  0% {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-feedback-slide-in {
+  animation: feedbackSlideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Animasi bump saat skor bertambah */
+@keyframes scoreBump {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.22);
+    color: #e63946;
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.animate-score-bump {
+  display: inline-block;
+  animation: scoreBump 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* Animasi piala/award saat kuis selesai */
+@keyframes trophyBounce {
+  0% {
+    opacity: 0;
+    transform: scale(0.6) rotate(-8deg);
+  }
+  60% {
+    opacity: 1;
+    transform: scale(1.12) rotate(4deg);
+  }
+  100% {
+    transform: scale(1) rotate(0deg);
+  }
+}
+
+.animate-trophy-bounce {
+  animation: trophyBounce 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+/* Partikel Confetti untuk Halaman Hasil */
+@keyframes confettiFall {
+  0% {
+    transform: translateY(-20px) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(180px) rotate(720deg);
+    opacity: 0;
+  }
+}
+
+.confetti-piece {
+  position: absolute;
+  width: 8px;
+  height: 12px;
+  border-radius: 2px;
+  animation: confettiFall 2.2s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+  pointer-events: none;
+}
+

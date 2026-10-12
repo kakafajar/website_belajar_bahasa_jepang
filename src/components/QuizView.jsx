@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import {
   Volume2,
+  VolumeX,
   CheckCircle,
   XCircle,
   RotateCcw,
@@ -12,6 +13,7 @@ import {
 } from './Icons';
 import { playJapaneseAudio, quizBank } from '../data/japaneseData';
 import { generateRandomQuiz } from '../data/quizGenerator';
+import { quizAudio } from '../utils/quizAudio';
 
 // Mengambil kumpulan soal standar terstruktur untuk tiap kategori
 function getStandardQuestions(cat) {
@@ -33,6 +35,14 @@ export default function QuizView({ category, onSwitchCategory, onBackToLearn }) 
   const [userAnswers, setUserAnswers] = useState([]);
   const [isCompleted, setIsCompleted] = useState(false);
   const [isPlayingAudio, setIsPlayingAudio] = useState(false);
+  const [isMuted, setIsMuted] = useState(() => quizAudio.isMuted());
+  const [scoreBump, setScoreBump] = useState(false);
+
+  // Toggle bisukan/aktifkan efek suara
+  const handleToggleMute = () => {
+    const nextMuted = quizAudio.toggleMute();
+    setIsMuted(nextMuted);
+  };
 
   // Saat berpindah kategori (Hiragana/Katakana/Kanji), tampilkan urutan standar yang konsisten
   useEffect(() => {
@@ -70,6 +80,11 @@ export default function QuizView({ category, onSwitchCategory, onBackToLearn }) 
     const isCorrect = index === currentQ.correctAnswerIndex;
     if (isCorrect) {
       setScore((prev) => prev + 1);
+      setScoreBump(true);
+      setTimeout(() => setScoreBump(false), 450);
+      quizAudio.playCorrect();
+    } else {
+      quizAudio.playWrong();
     }
 
     setUserAnswers((prev) => [
@@ -95,6 +110,7 @@ export default function QuizView({ category, onSwitchCategory, onBackToLearn }) 
       setIsAnswered(false);
     } else {
       setIsCompleted(true);
+      quizAudio.playFanfare();
     }
   };
 
@@ -162,9 +178,29 @@ export default function QuizView({ category, onSwitchCategory, onBackToLearn }) 
 
     return (
       <div className="py-10 max-w-2xl mx-auto px-4 sm:px-6">
-        <div className="bg-white rounded-2xl border border-slate-200/90 shadow-sm p-6 sm:p-8 space-y-6 text-center">
-          {/* Ikon Pencapaian */}
-          <div className="w-16 h-16 rounded-2xl bg-crimson-50 text-crimson-600 mx-auto flex items-center justify-center border border-crimson-100 shadow-sm">
+        <div className="bg-white rounded-2xl border border-slate-200/90 shadow-sm p-6 sm:p-8 space-y-6 text-center relative overflow-hidden">
+          {/* Confetti Selebrasi saat Kuis Selesai */}
+          {finalPercentage >= 50 && (
+            <div className="absolute inset-0 overflow-hidden pointer-events-none rounded-2xl" aria-hidden="true">
+              {Array.from({ length: 18 }).map((_, i) => (
+                <span
+                  key={i}
+                  className="confetti-piece"
+                  style={{
+                    left: `${(i * 5.6) + 1}%`,
+                    top: '-12px',
+                    backgroundColor: ['#e63946', '#10b981', '#3b82f6', '#f59e0b', '#ec4899', '#8b5cf6'][i % 6],
+                    animationDelay: `${i * 0.08}s`,
+                    animationDuration: `${1.9 + (i % 4) * 0.3}s`,
+                    transform: `rotate(${i * 20}deg)`,
+                  }}
+                />
+              ))}
+            </div>
+          )}
+
+          {/* Ikon Pencapaian dengan Bouncy Animation */}
+          <div className="w-16 h-16 rounded-2xl bg-crimson-50 text-crimson-600 mx-auto flex items-center justify-center border border-crimson-100 shadow-sm animate-trophy-bounce">
             <Award size={36} />
           </div>
 
@@ -311,8 +347,24 @@ export default function QuizView({ category, onSwitchCategory, onBackToLearn }) 
           ))}
         </div>
 
-        {/* Tombol Aksi (Acak Soal & Kartu Belajar) - Penuh ke kanan di Mobile */}
+        {/* Tombol Aksi (SFX Toggle, Acak Soal & Kartu Belajar) - Penuh ke kanan di Mobile */}
         <div className="flex items-center gap-2 w-full sm:w-auto">
+          {/* Tombol Toggle Efek Suara (SFX) */}
+          <button
+            type="button"
+            onClick={handleToggleMute}
+            className={`px-2.5 py-2 sm:py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-all shadow-2xs ${
+              isMuted
+                ? 'bg-slate-100 text-slate-400 border border-slate-200 hover:text-slate-600'
+                : 'bg-white text-slate-700 border border-slate-200 hover:text-crimson-600 hover:border-crimson-200'
+            }`}
+            title={isMuted ? 'Efek Suara: Bisu (Klik untuk aktifkan)' : 'Efek Suara: Aktif (Klik untuk bisukan)'}
+            aria-label={isMuted ? 'Aktifkan efek suara' : 'Bisukan efek suara'}
+          >
+            {isMuted ? <VolumeX size={13} /> : <Volume2 size={13} className="text-crimson-600" />}
+            <span className="hidden sm:inline">{isMuted ? 'SFX Bisu' : 'SFX Aktif'}</span>
+          </button>
+
           {isRandomMode ? (
             <button
               type="button"
@@ -365,18 +417,26 @@ export default function QuizView({ category, onSwitchCategory, onBackToLearn }) 
                 <span className="text-slate-500 font-medium">Mode Standar</span>
               )}
             </span>
-            <span>Skor: {score}</span>
+            <span>
+              Skor:{' '}
+              <span className={`transition-all duration-300 ${scoreBump ? 'animate-score-bump font-bold text-crimson-600' : 'font-semibold text-slate-700'}`}>
+                {score}
+              </span>
+            </span>
           </div>
           <div className="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
             <div
-              className="bg-crimson-600 h-2 rounded-full transition-all duration-300"
+              className="bg-crimson-600 h-2 rounded-full transition-all duration-300 ease-out"
               style={{ width: `${progressPercent}%` }}
             ></div>
           </div>
         </div>
 
-        {/* Karakter Soal, Badge Kategori & Speaker Audio */}
-        <div className="py-6 px-4 text-center bg-slate-50/80 rounded-2xl border border-slate-200/80 relative">
+        {/* Karakter Soal, Badge Kategori & Speaker Audio dengan Transisi Halus */}
+        <div
+          key={currentQuestionIndex}
+          className="animate-quiz-card-enter py-6 px-4 text-center bg-slate-50/80 rounded-2xl border border-slate-200/80 relative"
+        >
           {/* Badge Tipe Soal di Kiri Atas */}
           {currentQ.typeBadge && (
             <div className="absolute left-3 top-3 px-2.5 py-1 rounded-lg text-[10px] font-bold bg-white text-crimson-700 border border-crimson-100 shadow-2xs flex items-center gap-1">
@@ -414,21 +474,24 @@ export default function QuizView({ category, onSwitchCategory, onBackToLearn }) 
           </div>
         </div>
 
-        {/* Pilihan Ganda (4 Opsi) */}
+        {/* Pilihan Ganda (4 Opsi) dengan Feedback Animasi Halus */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           {currentQ.options.map((option, idx) => {
             const isSelected = selectedOption === idx;
             const isCorrect = idx === currentQ.correctAnswerIndex;
 
-            let buttonStyle = 'bg-white border-slate-200 text-slate-800 hover:border-slate-300 hover:bg-slate-50';
+            let buttonStyle = 'bg-white border-slate-200 text-slate-800 hover:border-slate-300 hover:bg-slate-50 active:scale-[0.99]';
+            let animationClass = '';
 
             if (isAnswered) {
               if (isCorrect) {
-                buttonStyle = 'bg-emerald-50 border-emerald-500 text-emerald-900 font-semibold ring-1 ring-emerald-500';
+                buttonStyle = 'bg-emerald-50/90 border-emerald-500 text-emerald-950 font-semibold ring-2 ring-emerald-400/40 shadow-xs';
+                animationClass = 'animate-option-correct';
               } else if (isSelected && !isCorrect) {
-                buttonStyle = 'bg-rose-50 border-rose-500 text-rose-900 font-semibold ring-1 ring-rose-500';
+                buttonStyle = 'bg-rose-50/90 border-rose-500 text-rose-950 font-semibold ring-2 ring-rose-400/40 shadow-xs';
+                animationClass = 'animate-option-wrong';
               } else {
-                buttonStyle = 'bg-white border-slate-200 text-slate-400 opacity-60';
+                buttonStyle = 'bg-white border-slate-200 text-slate-400 opacity-50';
               }
             }
 
@@ -438,7 +501,7 @@ export default function QuizView({ category, onSwitchCategory, onBackToLearn }) 
                 type="button"
                 disabled={isAnswered}
                 onClick={() => handleSelectOption(idx)}
-                className={`w-full p-4 rounded-xl border text-left text-sm transition-all flex items-center justify-between group focus:outline-none focus-visible:ring-2 focus-visible:ring-crimson-600 ${buttonStyle}`}
+                className={`w-full p-4 rounded-xl border text-left text-sm transition-all duration-200 flex items-center justify-between group focus:outline-none focus-visible:ring-2 focus-visible:ring-crimson-600 ${buttonStyle} ${animationClass}`}
               >
                 <div className="flex items-center gap-3 min-w-0">
                   <span className="w-6 h-6 shrink-0 rounded-lg bg-slate-100 group-hover:bg-slate-200 text-slate-600 flex items-center justify-center font-bold text-xs uppercase">
@@ -458,9 +521,9 @@ export default function QuizView({ category, onSwitchCategory, onBackToLearn }) 
           })}
         </div>
 
-        {/* Feedback Jawaban & Penjelasan */}
+        {/* Feedback Jawaban & Penjelasan dengan Animasi Slide Masuk */}
         {isAnswered && (
-          <div className="space-y-4 pt-2">
+          <div className="space-y-4 pt-2 animate-feedback-slide-in">
             <div
               className={`p-4 rounded-xl border text-sm ${
                 selectedOption === currentQ.correctAnswerIndex
@@ -489,7 +552,7 @@ export default function QuizView({ category, onSwitchCategory, onBackToLearn }) 
               <button
                 type="button"
                 onClick={handleNextQuestion}
-                className="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl bg-crimson-600 hover:bg-crimson-700 text-white font-semibold text-sm shadow-sm transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-crimson-600"
+                className="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl bg-crimson-600 hover:bg-crimson-700 active:scale-[0.98] text-white font-semibold text-sm shadow-sm transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-crimson-600"
               >
                 <span>
                   {currentQuestionIndex < questions.length - 1 ? 'Soal Berikutnya' : 'Lihat Hasil Akhir'}

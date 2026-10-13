@@ -50,9 +50,20 @@ export default function Navbar({ currentView, currentCategory, onNavigate }) {
             className="flex items-center gap-2.5 text-left group focus:outline-none focus-visible:ring-2 focus-visible:ring-crimson-600 rounded-lg p-1"
             title="Kembali ke Beranda Belajar"
           >
-            <span className="w-9 h-9 rounded-lg bg-crimson-600 text-white flex items-center justify-center font-bold text-lg shadow-sm group-hover:bg-crimson-700 transition-colors">
-              日
-            </span>
+            <div className="w-10 h-10 rounded-full overflow-hidden bg-crimson-600 border border-crimson-500/20 shadow-sm flex items-center justify-center shrink-0 group-hover:scale-105 group-hover:shadow-md transition-all duration-200">
+              <img
+                src="/Logo.png"
+                alt="NihongoLearn Logo"
+                className="w-full h-full object-cover"
+                style={{ transform: 'scale(1.72)' }}
+                onError={(e) => {
+                  if (!e.currentTarget.dataset.retried) {
+                    e.currentTarget.dataset.retried = 'true';
+                    e.currentTarget.src = '/logo.png';
+                  }
+                }}
+              />
+            </div>
             <div>
               <span className="text-lg font-bold text-slate-900 tracking-tight block leading-tight">
                 NihongoLearn
